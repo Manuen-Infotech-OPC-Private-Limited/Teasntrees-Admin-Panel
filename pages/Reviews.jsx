@@ -120,13 +120,13 @@ const Reviews = () => {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Customer Reviews</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Manage customer and rider feedback</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Customer Reviews</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage customer and rider feedback</p>
                 </div>
 
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
                 <StatCard label="Total Reviews" value={stats?.totalReviews || 0} icon={MessageSquare} theme="blue" desc="All time reviews" loading={statsLoading} />
                 <StatCard label="Pending" value={stats?.pendingReviews || 0} icon={Star} theme="orange" desc="Need approval" loading={statsLoading} />
                 <StatCard label="Food Rating" value={stats?.averageFoodRating || '0.0'} icon={Star} theme="green" desc="Average score" loading={statsLoading} />
@@ -187,7 +187,7 @@ const Reviews = () => {
                                         </div>
                                         <p className="text-xs text-gray-500 font-bold leading-relaxed italic border-l-4 border-gray-100 pl-4 py-1 mb-6">"{review.review}"</p>
                                         <div className="flex items-center gap-2">
-                                            <button onClick={() => handleViewDetails(review._id)} className="px-5 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View</button>
+                                            <button onClick={() => handleViewDetails(review._id)} className="px-5 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View</button>
                                             {!review.isApproved ? (
                                                 <button onClick={() => handleApprove(review._id)} className="px-5 py-2.5 bg-green-50 text-green-600 rounded-xl text-[10px] font-black uppercase hover:bg-green-600 hover:text-white transition-all">Approve</button>
                                             ) : (
@@ -206,7 +206,7 @@ const Reviews = () => {
                     <div className="p-6 bg-gray-50/30 border-t border-gray-100 flex justify-center gap-2">
                         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white border border-gray-100 disabled:opacity-30"><ArrowRight className="w-5 h-5 rotate-180" /></button>
                         <span className="bg-white px-6 py-3 rounded-2xl border border-gray-100 font-black text-xs text-gray-400 flex items-center">PAGE {page} / {paginationInfo.totalPages}</span>
-                        <button onClick={() => setPage(p => Math.min(paginationInfo.totalPages, p + 1))} disabled={page === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white disabled:opacity-30"><ArrowRight className="w-5 h-5" /></button>
+                        <button onClick={() => setPage(p => Math.min(paginationInfo.totalPages, p + 1))} disabled={page === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#56763D] text-white disabled:opacity-30"><ArrowRight className="w-5 h-5" /></button>
                     </div>
                 )}
             </div>
@@ -234,20 +234,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const style = themes[theme] || themes.blue;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tight ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1 py-1 px-3 ${bgColor} rounded-full w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-tight ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

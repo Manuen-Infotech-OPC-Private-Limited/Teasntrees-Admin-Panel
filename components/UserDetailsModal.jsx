@@ -91,13 +91,13 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-900/40 backdrop-blur-sm">
             <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-gray-100 flex flex-col">
                 {/* Header */}
-                <div className={`p-8 flex items-center justify-between border-b border-gray-50 z-10 ${user.role === 'admin' ? 'bg-purple-50' :
+                <div className={`p-5 sm:p-6 flex items-center justify-between border-b border-gray-50 z-10 ${user.role === 'admin' ? 'bg-purple-50' :
                     user.role === 'rider' ? 'bg-orange-50' :
                         user.role === 'manager' ? 'bg-blue-50' :
                             'bg-emerald-50'
                     }`}>
-                    <div className="flex items-center gap-6">
-                        <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center font-black text-3xl uppercase border shadow-sm ${user.role === 'admin' ? 'bg-white text-purple-600 border-purple-100' :
+                    <div className="flex items-center gap-4">
+                        <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center font-black text-xl uppercase border shadow-sm ${user.role === 'admin' ? 'bg-white text-purple-600 border-purple-100' :
                             user.role === 'rider' ? 'bg-white text-orange-600 border-orange-100' :
                                 user.role === 'manager' ? 'bg-white text-blue-600 border-blue-100' :
                                     'bg-white text-emerald-600 border-emerald-100'
@@ -105,22 +105,22 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
                             {user.name?.charAt(0)}
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">{user.name}</h2>
-                            <div className="flex items-center gap-2 mt-1">
+                            <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">{user.name}</h2>
+                            <div className="flex items-center gap-2 mt-0.5">
                                 <RoleIcon className={`w-3 h-3 ${user.role === 'admin' ? 'text-purple-600' :
                                     user.role === 'rider' ? 'text-orange-600' :
                                         user.role === 'manager' ? 'text-blue-600' :
                                             'text-emerald-600'
                                     }`} />
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 italic">Account Role: {user.role}</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Account Role: {user.role}</span>
                             </div>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-white/50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all border border-black/5"
+                        className="p-2 bg-white/50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all border border-black/5"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 

@@ -102,16 +102,16 @@ const Payouts = () => {
         <div className="space-y-8 relative">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Rider Payments</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Manage payments and earnings for riders</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Rider Payments</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage payments and earnings for riders</p>
                 </div>
                 <button
                     onClick={() => refetch()}
                     disabled={isSyncing}
-                    className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20 disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-[#56763D]/20 disabled:opacity-50"
                 >
                     <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                    {isSyncing ? 'Syncing...' : 'Sync Treasury'}
+                    {isSyncing ? 'Syncing...' : 'Refresh'}
                 </button>
             </div>
 
@@ -124,7 +124,7 @@ const Payouts = () => {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <StatCard label="Pending Payments" value={`₹${totalUnpaid.toLocaleString()}`} icon={Wallet} theme="amber" desc="Money to be paid" loading={loading} />
                 <StatCard label="Riders to Pay" value={activeRiders} icon={Bike} theme="indigo" desc="Waiting for payment" loading={loading} />
             </div>
@@ -178,7 +178,7 @@ const Payouts = () => {
                                             <td className="px-8 py-6 text-right">
                                                 <button
                                                     onClick={() => handleInitiatePayout(rider)}
-                                                    className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-indigo-600 shadow-xl shadow-black/10 disabled:opacity-50 group/btn active:scale-95"
+                                                    className="inline-flex items-center gap-2 px-8 py-4 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-indigo-600 shadow-xl shadow-[#56763D]/10 disabled:opacity-50 group/btn active:scale-95"
                                                 >
                                                     <IndianRupee className="w-4 h-4" />
                                                     Pay <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -244,7 +244,7 @@ const Payouts = () => {
                                 <button
                                     onClick={handleConfirmPayout}
                                     disabled={isConfirming || !payoutReference.trim()}
-                                    className="flex-1 py-4 bg-black text-white rounded-2xl font-bold hover:bg-gray-900 transition-all shadow-xl shadow-black/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="flex-1 py-4 bg-[#56763D] text-white rounded-2xl font-bold hover:bg-[#466031] transition-all shadow-xl shadow-[#56763D]/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
                                     {isConfirming ? (
                                         <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
@@ -269,20 +269,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const style = themes[theme] || themes.indigo;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tighter ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1 py-1 px-3 ${bgColor} rounded-full w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-tight ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all duration-300`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

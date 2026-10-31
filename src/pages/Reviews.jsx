@@ -187,7 +187,7 @@ const Reviews = () => {
                                         </div>
                                         <p className="text-xs text-gray-500 font-bold leading-relaxed italic border-l-4 border-gray-100 pl-4 py-1 mb-6">"{review.review}"</p>
                                         <div className="flex items-center gap-2">
-                                            <button onClick={() => handleViewDetails(review._id)} className="px-5 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View</button>
+                                            <button onClick={() => handleViewDetails(review._id)} className="px-5 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View</button>
                                             {!review.isApproved ? (
                                                 <button onClick={() => handleApprove(review._id)} className="px-5 py-2.5 bg-green-50 text-green-600 rounded-xl text-[10px] font-black uppercase hover:bg-green-600 hover:text-white transition-all">Approve</button>
                                             ) : (
@@ -206,7 +206,7 @@ const Reviews = () => {
                     <div className="p-6 bg-gray-50/30 border-t border-gray-100 flex justify-center gap-2">
                         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white border border-gray-100 disabled:opacity-30"><ArrowRight className="w-5 h-5 rotate-180" /></button>
                         <span className="bg-white px-6 py-3 rounded-2xl border border-gray-100 font-black text-xs text-gray-400 flex items-center">PAGE {page} / {paginationInfo.totalPages}</span>
-                        <button onClick={() => setPage(p => Math.min(paginationInfo.totalPages, p + 1))} disabled={page === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white disabled:opacity-30"><ArrowRight className="w-5 h-5" /></button>
+                        <button onClick={() => setPage(p => Math.min(paginationInfo.totalPages, p + 1))} disabled={page === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#56763D] text-white disabled:opacity-30"><ArrowRight className="w-5 h-5" /></button>
                     </div>
                 )}
             </div>

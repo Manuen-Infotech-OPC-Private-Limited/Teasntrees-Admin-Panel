@@ -3,6 +3,7 @@ import { Users, Search, Filter, UserPlus, TrendingUp, UserCheck, UserX, ArrowRig
 import api from '../utils/api';
 import CustomerCard from '../components/CustomerCard';
 import CustomerDetailsModal from '../components/CustomerDetailsModal';
+import ExportButton from '../components/ExportButton';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -121,16 +122,25 @@ const Customers = () => {
                     <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Customers</h1>
                     <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage customer accounts</p>
                 </div>
-                <button
-                    onClick={() => {
-                        queryClient.invalidateQueries({ queryKey: ['customers-stats'] });
-                        refetch();
-                    }}
-                    disabled={isSyncing}
-                    className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 self-end sm:self-auto"
-                >
-                    <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
-                </button>
+                <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <ExportButton
+                        resource="customers"
+                        filters={{
+                            search: searchTerm,
+                            status: filterStatus === 'all' ? '' : filterStatus
+                        }}
+                    />
+                    <button
+                        onClick={() => {
+                            queryClient.invalidateQueries({ queryKey: ['customers-stats'] });
+                            refetch();
+                        }}
+                        disabled={isSyncing}
+                        className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -173,7 +183,7 @@ const Customers = () => {
                 <div className="flex items-center justify-center gap-2 py-8">
                     <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-xs font-black uppercase disabled:opacity-30">Prev</button>
                     <span className="font-black text-gray-400 uppercase tracking-tighter">Page {page} / {paginationInfo.totalPages}</span>
-                    <button onClick={() => setPage(p => Math.min(paginationInfo.totalPages, p + 1))} disabled={page === paginationInfo.totalPages} className="px-6 py-3 bg-black text-white rounded-2xl text-xs font-black uppercase disabled:opacity-30">Next</button>
+                    <button onClick={() => setPage(p => Math.min(paginationInfo.totalPages, p + 1))} disabled={page === paginationInfo.totalPages} className="px-6 py-3 bg-[#56763D] text-white rounded-2xl text-xs font-black uppercase disabled:opacity-30">Next</button>
                 </div>
             )}
 

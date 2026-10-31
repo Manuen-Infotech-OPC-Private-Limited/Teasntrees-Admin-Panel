@@ -111,8 +111,8 @@ export default function SeasonalProducts() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Seasonal Items</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Manage items available only at certain times</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Seasonal Items</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage items available only at certain times</p>
                 </div>
                 <button
                     onClick={() => {
@@ -152,11 +152,11 @@ export default function SeasonalProducts() {
                                     ? product.category.name
                                     : 'Uncategorized';
 
-                                return (
-                                <div key={product._id} className="group bg-white rounded-[2rem] border-2 border-gray-50 overflow-hidden hover:shadow-2xl transition-all">
+                                 return (
+                                <div key={product._id} className="bg-white rounded-[2rem] border-2 border-gray-50 overflow-hidden shadow-sm">
                                     <div className="h-44 flex items-center justify-center relative bg-gray-50">
                                         {product.image ? (
-                                            <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                                         ) : (
                                             <Package className="w-16 h-16 text-gray-200" />
                                         )}
@@ -168,8 +168,8 @@ export default function SeasonalProducts() {
                                     </div>
                                     <div className="p-6 space-y-4">
                                         <div>
-                                            <h3 className="font-black text-gray-900 uppercase truncate text-sm">{product.name}</h3>
-                                            <p className="text-[10px] text-gray-400 font-bold line-clamp-1">{product.description}</p>
+                                            <h3 className="font-black text-gray-900 uppercase break-words text-sm">{product.name}</h3>
+                                            <p className="text-[10px] text-gray-400 font-bold break-words">{product.description}</p>
                                             <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600 mt-1">{categoryName}</p>
                                         </div>
                                         <div className="flex items-center justify-between">
@@ -184,7 +184,7 @@ export default function SeasonalProducts() {
                                             </div>
                                         )}
                                         <div className="flex gap-2 pt-4">
-                                            <button onClick={() => navigate(`/${urlBrand}/products/${product._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View</button>
+                                            <button onClick={() => navigate(`/${urlBrand}/products/${product._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View</button>
                                             <button onClick={() => { setEditingProduct(product); setShowModal(true); }} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-indigo-600 hover:text-white transition-all">Edit</button>
                                             <button onClick={() => deleteProduct(product._id)} className="px-4 py-3 bg-red-50 text-red-300 rounded-2xl hover:bg-red-600 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></button>
                                         </div>
@@ -215,20 +215,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const style = themes[theme] || themes.green;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tight ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1 py-1 px-3 ${bgColor} rounded-full w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-tight ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

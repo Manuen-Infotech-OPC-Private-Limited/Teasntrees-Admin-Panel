@@ -31,21 +31,21 @@ const LogDetailsModal = ({ log, isOpen, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-900/40 backdrop-blur-sm">
             <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-gray-100 flex flex-col relative z-10">
                 {/* Header */}
-                <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-white z-10">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center border border-gray-100 shadow-sm">
-                            <Terminal className="w-10 h-10 text-gray-900" />
+                <div className="p-5 sm:p-6 border-b border-gray-50 flex items-center justify-between bg-white z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-gray-50 rounded-[1.5rem] flex items-center justify-center border border-gray-100 shadow-sm">
+                            <Terminal className="w-7 h-7 text-gray-900" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Activity Log</h2>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-1 italic">Event ID: {log._id}</p>
+                            <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Activity Log</h2>
+                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Event ID: {log._id}</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 

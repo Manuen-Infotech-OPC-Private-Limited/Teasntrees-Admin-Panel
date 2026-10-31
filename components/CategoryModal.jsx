@@ -70,31 +70,31 @@ export default function CategoryModal({ isOpen, onClose, category, onSuccess }) 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100">
+        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+            <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-gray-100 my-auto">
                 {/* Header */}
-                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-8 flex items-center justify-between z-10">
-                    <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-4 sm:p-5 flex items-center justify-between z-10">
+                    <h2 className="text-base sm:text-lg font-black text-gray-900 uppercase tracking-tight">
                         {category ? 'Edit Category' : 'Add New Category'}
                     </h2>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
                     {error && (
-                        <div className="bg-red-50 border border-red-100 text-red-600 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">
+                        <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest">
                             ERROR: {error}
                         </div>
                     )}
 
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                    <div className="space-y-1.5">
+                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">
                             Category Name *
                         </label>
                         <input
@@ -102,7 +102,7 @@ export default function CategoryModal({ isOpen, onClose, category, onSuccess }) 
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="E.G. HANDCRAFTED TEAS"
-                            className="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 text-sm font-black uppercase tracking-widest placeholder:text-gray-300 focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all"
+                            className="w-full bg-gray-50 border-none rounded-xl py-2.5 px-4 text-xs font-bold uppercase tracking-wider placeholder:text-gray-300 focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all"
                             required
                         />
                     </div>
@@ -158,7 +158,7 @@ export default function CategoryModal({ isOpen, onClose, category, onSuccess }) 
                                 required
                             >
                                 <option value="teasntrees">Teas N Trees</option>
-                                <option value="littleh">LittleH Bakery</option>
+                                <option value="littleh">Cream N Crust</option>
                             </select>
                         </div>
                     </div>

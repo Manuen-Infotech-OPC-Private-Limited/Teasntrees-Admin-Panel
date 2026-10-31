@@ -26,6 +26,13 @@ import Deliveries from './pages/Deliveries.jsx';
 import Payouts from './pages/Payouts.jsx';
 import Managers from './pages/Managers.jsx';
 import MessagesPage from './pages/MessagesPage.jsx';
+import Offers from './pages/Offers.jsx';
+import Banners from './pages/Banners.jsx';
+import Vendors from './pages/Vendors.jsx';
+import Purchases from './pages/Purchases.jsx';
+import Sales from './pages/Sales.jsx';
+import Reports from './pages/Reports.jsx';
+import Expenses from './pages/Expenses.jsx';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -70,6 +77,14 @@ function App() {
                 <Route path="products/:id" element={<ProductDetail />} />
                 <Route path="products/seasonal" element={<SeasonalProducts />} />
                 <Route path="orders" element={<Orders />} />
+                <Route path="sales" element={<Sales />} />
+                <Route path="purchases" element={<Purchases />} />
+                <Route path="expenses" element={<Expenses />} />
+                <Route path="vendors" element={<Vendors />} />
+                <Route path="reports" element={<Reports />} />
+                    <Route path="expenses" element={<Expenses />} />
+                <Route path="offers" element={<Offers />} />
+                <Route path="banners" element={<Banners />} />
                 <Route path="riders" element={<Riders />} />
                 <Route path="customers" element={<Customers />} />
                 <Route path="messages" element={<MessagesPage />} />

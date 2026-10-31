@@ -228,43 +228,43 @@ export default function ProductModal({ isOpen, onClose, product, onSuccess, bran
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
-                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-8 flex items-center justify-between z-10">
-                    <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+            <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-100 my-auto">
+                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-4 sm:p-5 flex items-center justify-between z-10">
+                    <h2 className="text-base sm:text-lg font-black text-gray-900 uppercase tracking-tight">
                         {product ? 'Edit Product' : 'Add New Product'}
                     </h2>
-                    <button onClick={onClose} className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all">
-                        <X className="w-6 h-6" />
+                    <button onClick={onClose} className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all">
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 space-y-8">
-                    {error && <div className="bg-red-50 border border-red-100 text-red-600 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">ERROR: {error}</div>}
+                <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-5">
+                    {error && <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest">ERROR: {error}</div>}
 
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="col-span-2 space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Product Name *</label>
-                            <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 text-sm font-black uppercase tracking-widest placeholder:text-gray-300 focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all" placeholder="E.G. CLASSIC LATTE" required />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2 space-y-1.5">
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Product Name *</label>
+                            <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-gray-50 border-none rounded-xl py-2.5 px-4 text-xs font-bold uppercase tracking-wider placeholder:text-gray-300 focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all" placeholder="E.G. CLASSIC LATTE" required />
                         </div>
 
-                        <div className="col-span-2 space-y-2">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Description *</label>
-                            <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 text-sm font-black uppercase tracking-widest placeholder:text-gray-300 focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all min-h-[100px] resize-none" placeholder="PRODUCT COMPOSITION AND TASTE NOTES..." required />
+                        <div className="col-span-2 space-y-1.5">
+                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Description *</label>
+                            <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full bg-gray-50 border-none rounded-xl py-2.5 px-4 text-xs font-bold uppercase tracking-wider placeholder:text-gray-300 focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all min-h-[80px] resize-none" placeholder="PRODUCT COMPOSITION AND TASTE NOTES..." required />
                         </div>
 
                         {!isLittlehCakeCategory && (
-                            <div className="col-span-2 space-y-6">
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Price (INR) *</label>
-                                        <input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 text-sm font-black uppercase tracking-widest focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all" required={formData.sizeOptions.length === 0} />
+                            <div className="col-span-2 space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Price (INR) *</label>
+                                        <input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full bg-gray-50 border-none rounded-xl py-2.5 px-4 text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-emerald-600/20 focus:bg-white transition-all" required={formData.sizeOptions.length === 0} />
                                     </div>
                                     <div className="flex items-end">
                                         <button
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, sizeOptions: [...prev.sizeOptions, { size: '', price: '' }] }))}
-                                            className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all border-2 border-dashed border-gray-100"
+                                            className="w-full py-2.5 bg-gray-50 text-gray-400 rounded-xl text-[9px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all border-2 border-dashed border-gray-100"
                                         >
                                             + Add Size Variation
                                         </button>

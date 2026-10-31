@@ -8,38 +8,38 @@ const CartDetailsModal = ({ cart, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-900/40 backdrop-blur-sm">
             <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] relative z-10">
                 {/* Header */}
-                <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-white z-10">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center border border-gray-100 shadow-sm">
-                            <ShoppingBag className="w-10 h-10 text-gray-900" />
+                <div className="p-5 sm:p-6 border-b border-gray-50 flex items-center justify-between bg-white z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-gray-50 rounded-[1.5rem] flex items-center justify-center border border-gray-100 shadow-sm">
+                            <ShoppingBag className="w-7 h-7 text-gray-900" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Cart Details</h2>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-1 italic">Abandoned for {cart.daysAbandoned} Days</p>
+                            <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Cart Details</h2>
+                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Abandoned for {cart.daysAbandoned} Days</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-10 space-y-10">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
                     {/* Customer Info Card */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-gray-50/50 rounded-[2.5rem] border border-gray-50 relative overflow-hidden group">
-                        <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-50/50 rounded-[2rem] border border-gray-50 relative overflow-hidden group">
+                        <div className="space-y-3">
                             <h3 className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                                 <User className="w-3.5 h-3.5" />
                                 CUSTOMER
                             </h3>
                             <div>
-                                <p className="text-xl font-black text-gray-900 uppercase tracking-tight">{cart.userName}</p>
+                                <p className="text-base font-black text-gray-900 uppercase tracking-tight">{cart.userName}</p>
                                 <div className="flex items-center gap-2 text-gray-500 font-black mt-1">
                                     <Phone className="w-3.5 h-3.5" />
-                                    <span className="text-[10px] uppercase tracking-widest">{cart.userMobile}</span>
+                                    <span className="text-[9px] uppercase tracking-widest">{cart.userMobile}</span>
                                 </div>
                             </div>
                         </div>

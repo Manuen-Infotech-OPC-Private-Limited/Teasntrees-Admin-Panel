@@ -133,25 +133,25 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSuccess })
     };
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-gray-100">
+        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+            <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-gray-100 my-auto">
                 {/* Header */}
-                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-8 flex items-center justify-between z-10">
+                <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-4 sm:p-5 flex items-center justify-between z-10">
                     <div>
-                        <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Order Details</h2>
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mt-1 italic">Order #{order.orderNumber}</p>
+                        <h2 className="text-base sm:text-lg font-black text-gray-900 uppercase tracking-tight">Order Details</h2>
+                        <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mt-0.5">Order #{order.orderNumber}</p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>
 
-                <div className="p-8 space-y-8">
+                <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">
                     {/* Status and Actions */}
-                    <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-[2rem] border border-gray-50">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-6 bg-gray-50/50 rounded-[1.5rem] sm:rounded-[2rem] border border-gray-50">
                         <div className="flex items-center gap-4">
                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Status:</span>
                             <OrderStatusBadge status={order.status} />

@@ -104,24 +104,24 @@ const Profile = () => {
 
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <div className="mb-12">
-                <h1 className="text-4xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-4">
-                    <User className="w-10 h-10 text-black p-2 bg-gray-100 rounded-2xl" />
+            <div className="mb-8">
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-3">
+                    <User className="w-8 h-8 text-black p-1.5 bg-gray-100 rounded-2xl" />
                     Admin Profile
                 </h1>
-                <p className="text-gray-500 mt-2 font-bold">Manage your account and platform identity</p>
+                <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage your account and platform identity</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column: Summary Card */}
                 <div className="md:col-span-1">
-                    <div className="bg-white rounded-[3rem] shadow-sm border border-gray-100 p-8 text-center">
-                        <div className="w-32 h-32 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 text-black text-4xl font-black border-4 border-white shadow-xl">
+                    <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 text-center">
+                        <div className="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-black text-2xl font-black border-4 border-white shadow-lg">
                             {profile.name?.charAt(0) || 'A'}
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">{profile.name}</h2>
-                        <div className="flex items-center justify-center gap-1 mt-2">
-                            <span className="px-3 py-1 bg-black text-white text-[10px] font-black uppercase rounded-lg tracking-widest">{profile.role}</span>
+                        <h2 className="text-lg font-black text-gray-900 uppercase tracking-tight">{profile.name}</h2>
+                        <div className="flex items-center justify-center gap-1 mt-1.5">
+                            <span className="px-2.5 py-0.5 bg-[#56763D] text-white text-[9px] font-black uppercase rounded-lg tracking-widest">{profile.role}</span>
                         </div>
 
                         <div className="mt-8 pt-8 border-t border-gray-50 flex flex-col gap-4 text-[10px] font-black uppercase tracking-widest">
@@ -147,7 +147,7 @@ const Profile = () => {
                             {!isEditing && (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="bg-black text-white px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
+                                    className="bg-[#56763D] text-white px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
                                 >
                                     Edit Info
                                 </button>

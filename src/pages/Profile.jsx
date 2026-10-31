@@ -121,7 +121,7 @@ const Profile = () => {
                         </div>
                         <h2 className="text-lg font-black text-gray-900 uppercase tracking-tight">{profile.name}</h2>
                         <div className="flex items-center justify-center gap-1 mt-1.5">
-                            <span className="px-2.5 py-0.5 bg-black text-white text-[9px] font-black uppercase rounded-lg tracking-widest">{profile.role}</span>
+                            <span className="px-2.5 py-0.5 bg-[#56763D] text-white text-[9px] font-black uppercase rounded-lg tracking-widest">{profile.role}</span>
                         </div>
 
                         <div className="mt-8 pt-8 border-t border-gray-50 flex flex-col gap-4 text-[10px] font-black uppercase tracking-widest">
@@ -147,7 +147,7 @@ const Profile = () => {
                             {!isEditing && (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="bg-black text-white px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
+                                    className="bg-[#56763D] text-white px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg"
                                 >
                                     Edit Info
                                 </button>

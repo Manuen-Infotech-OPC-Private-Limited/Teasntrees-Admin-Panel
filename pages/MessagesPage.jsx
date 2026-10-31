@@ -63,8 +63,8 @@ export default function MessagesPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Messages</h1>
-                    <p className="text-gray-500 mt-2 font-medium">Manage customer inquiries and feedback</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Messages</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage customer inquiries and feedback</p>
                 </div>
 
                 <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
@@ -97,7 +97,7 @@ export default function MessagesPage() {
                         {data?.data?.map((message) => (
                             <div
                                 key={message._id}
-                                className="group bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:translate-y-[-2px] transition-all duration-300 relative overflow-hidden"
+                                className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden"
                             >
                                 <div className={`absolute top-0 left-0 w-2 h-full ${message.status === 'New' ? 'bg-blue-500' :
                                         message.status === 'Resolved' ? 'bg-emerald-500' : 'bg-yellow-500'

@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import api from '../utils/api';
 import ProductModal from '../components/ProductModal';
+import ExportButton from '../components/ExportButton';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -23,7 +24,7 @@ import {
 } from 'lucide-react';
 
 const CardSkeleton = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 animate-pulse">
         {[1, 2, 3, 4, 5, 6].map(i => (
             <div key={i} className="bg-white rounded-[2rem] border border-gray-100 h-96"></div>
         ))}
@@ -154,12 +155,12 @@ export default function Products() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Product List</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Manage items and pricing</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Product List</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage items and pricing</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 self-end sm:self-auto">
                     <button
                         onClick={() => refetch()}
                         disabled={isSyncing}
@@ -167,14 +168,15 @@ export default function Products() {
                     >
                         <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
                     </button>
-                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20">
+                    <ExportButton resource="products" filters={{ search: searchTerm, category: filters.category }} />
+                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-[#56763D]/20">
                         <Plus className="w-5 h-5" />
                         New Item
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <StatCard label="Total Items" value={stats.totalProducts} icon={Package} theme="blue" desc="All items listed" loading={statsLoading} />
                 <StatCard label="Categories" value={stats.categoriesCount} icon={Filter} theme="purple" desc="Active groups" loading={!categoriesData} />
                 <StatCard label="New Items" value={stats.newIntroProducts} icon={Calendar} theme="green" desc="Marked as New" loading={statsLoading} />
@@ -186,7 +188,7 @@ export default function Products() {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input type="text" placeholder="Search by name, SKU, or description..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="input pl-12 text-sm font-bold" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     <select value={filters.category} onChange={(e) => setFilters({ ...filters, category: e.target.value })} className="input text-xs font-black uppercase">
                         <option value="">All Categories</option>
                         {categories.map((cat) => (
@@ -208,12 +210,12 @@ export default function Products() {
             </div>
 
             {selectedProducts.size > 0 && (
-                <div className="bg-indigo-600 rounded-2xl p-4 flex items-center justify-between text-white shadow-xl">
+                <div className="bg-indigo-600 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-white shadow-xl">
                     <div className="flex items-center gap-4 font-black uppercase text-xs">
                         <CheckSquare className="w-5 h-5" />
                         <span>{selectedProducts.size} Items Targeted</span>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 w-full sm:w-auto justify-end">
                         <select value={bulkAction} onChange={(e) => setBulkAction(e.target.value)} className="text-[10px] font-black uppercase border-none rounded-xl px-3 py-2 bg-white/20 text-white placeholder:text-white/50">
                             <option value="" className="text-gray-900">Choose action...</option>
                             <option value="make-available" className="text-gray-900">Push to Live</option>
@@ -227,14 +229,14 @@ export default function Products() {
 
             <div className="min-h-[400px]">
                 {products.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {products.map((product) => {
                             const categoryName = typeof product.category === 'object' && product.category !== null
                                 ? product.category.name
                                 : categoryNameById.get(product.category) || 'Uncategorized';
 
                             return (
-                                <div key={product._id} className={`group bg-white rounded-[2rem] shadow-sm border-2 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all ${selectedProducts.has(product._id) ? 'border-indigo-600 ring-4 ring-indigo-50' : 'border-gray-50'}`}>
+                                <div key={product._id} className={`bg-white rounded-[2rem] shadow-sm border-2 overflow-hidden ${selectedProducts.has(product._id) ? 'border-indigo-600 ring-4 ring-indigo-50' : 'border-gray-50'}`}>
                                     <div className="h-56 bg-gray-50 flex items-center justify-center relative">
                                         {product.image ? (
                                             <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -251,10 +253,10 @@ export default function Products() {
                                     <div className="p-6 space-y-4">
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-black text-gray-900 uppercase truncate text-sm flex-1">{product.name}</h3>
-                                                {product.isSeasonal && <span className="bg-orange-50 text-orange-600 text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md">Seasonal</span>}
+                                                <h3 className="font-black text-gray-900 uppercase break-words text-sm flex-1">{product.name}</h3>
+                                                {product.isSeasonal && <span className="bg-orange-50 text-orange-600 text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md shrink-0">Seasonal</span>}
                                             </div>
-                                            <p className="text-xs text-gray-400 font-bold line-clamp-1 mb-2">{product.description}</p>
+                                            <p className="text-xs text-gray-400 font-bold break-words mb-2">{product.description}</p>
                                             <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600">{categoryName}</p>
 
                                         </div>
@@ -280,7 +282,7 @@ export default function Products() {
                                         </div>
 
                                         <div className="flex gap-2 pt-2">
-                                            <button onClick={() => navigate(`/${urlBrand}/products/${product._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View</button>
+                                            <button onClick={() => navigate(`/${urlBrand}/products/${product._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View</button>
                                             <button onClick={() => { setEditingProduct(product); setShowModal(true); }} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-indigo-600 hover:text-white transition-all">Edit</button>
                                             <button onClick={() => deleteProduct(product._id)} className="px-4 py-3 bg-red-50 text-red-400 rounded-2xl hover:bg-red-600 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></button>
                                         </div>
@@ -301,7 +303,7 @@ export default function Products() {
                 <div className="flex items-center justify-center gap-2 py-12">
                     <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.max(1, p.currentPage - 1) }))} disabled={pagination.currentPage === 1} className="p-4 bg-white border border-gray-100 rounded-2xl text-xs font-black uppercase disabled:opacity-30">Prev</button>
                     <span className="font-black text-gray-400 uppercase text-xs px-4">Page {pagination.currentPage} of {paginationInfo.totalPages}</span>
-                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="p-4 bg-black text-white rounded-2xl text-xs font-black uppercase disabled:opacity-30">Next</button>
+                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="p-4 bg-[#56763D] text-white rounded-2xl text-xs font-black uppercase disabled:opacity-30">Next</button>
                 </div>
             )}
 
@@ -329,20 +331,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const style = themes[theme] || themes.blue;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tight ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1 py-1 px-3 ${bgColor} rounded-full w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-tight ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

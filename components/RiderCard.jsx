@@ -7,16 +7,21 @@ export default function RiderCard({ rider, onViewDetails, onApprove, onReject, o
     };
 
     return (
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all group">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             {/* Header Area */}
-            <div className="p-6 pb-0 flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 group-hover:bg-teal-50 transition-colors">
-                        <Bike className="w-7 h-7 text-teal-600" />
+            <div className="p-6 pb-0 flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 shrink-0">
+                        <Bike className="w-6 h-6 sm:w-7 sm:h-7 text-teal-600" />
                     </div>
-                    <div>
-                        <h3 className="font-black text-gray-900 uppercase tracking-tight text-sm truncate max-w-[150px]">{rider.name}</h3>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-0.5">{rider.mobile}</p>
+                    <div className="min-w-0 flex-1">
+                        <h3 className="font-black text-gray-900 uppercase tracking-tight text-xs leading-snug break-words">{rider.name}</h3>
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">{rider.mobile}</p>
+                        {rider.pinResetAt && (
+                            <p className="text-[9px] font-black text-amber-600 uppercase tracking-widest mt-0.5" title={`Reset by the rider from the app${rider.pinResetCount > 1 ? ` (${rider.pinResetCount} times)` : ''}`}>
+                                PIN reset {new Date(rider.pinResetAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}
+                            </p>
+                        )}
                     </div>
                 </div>
                 {!isPending && (
@@ -25,21 +30,21 @@ export default function RiderCard({ rider, onViewDetails, onApprove, onReject, o
                             {rider.isOnline ? 'Active' : 'Offline'}
                         </span>
                         <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase ${rider.isActive ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}`}>
-                            {rider.isActive ? 'Live' : 'Banned'}
+                            {rider.isActive ? 'Live' : 'Inactive'}
                         </span>
                     </div>
                 )}
             </div>
 
             {/* Content Area */}
-            <div className="p-6 space-y-5">
+            <div className="p-6 space-y-4">
                 {/* Info Block */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="p-1.5 bg-gray-50 rounded-lg">
                             <MapPin className="w-3 h-3 text-gray-400" />
                         </div>
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{rider.vehicleNumber || 'NO PLATE'}</span>
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{rider.vehicleNumber || 'NO PLATE'}</span>
                     </div>
                     <span className="bg-gray-50 text-gray-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-md">{rider.vehicleType || 'BIKE'}</span>
                 </div>
@@ -49,13 +54,13 @@ export default function RiderCard({ rider, onViewDetails, onApprove, onReject, o
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                         <div>
                             <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Jobs Done</p>
-                            <p className="text-xl font-black text-gray-900">{rider.totalDeliveries || 0}</p>
+                            <p className="text-lg font-black text-gray-900">{rider.totalDeliveries || 0}</p>
                         </div>
                         <div>
                             <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Rating</p>
                             <div className="flex items-center gap-1">
                                 <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                <span className="text-xl font-black text-gray-900">{rider.averageRating?.toFixed(1) || '0.0'}</span>
+                                <span className="text-lg font-black text-gray-900">{rider.averageRating?.toFixed(1) || '0.0'}</span>
                             </div>
                         </div>
                     </div>

@@ -128,41 +128,41 @@ const DeliveryDetailsModal = ({ isOpen, onClose, delivery }) => {
     });
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-900/40 backdrop-blur-sm">
-            <div className="bg-white rounded-[2.5rem] w-full max-w-5xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-emerald-900/40 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl sm:rounded-[2.5rem] w-full max-w-5xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[95vh] sm:max-h-[90vh]">
                 {/* Header */}
-                <div className="p-8 border-b border-gray-50 bg-white flex items-center justify-between z-10">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center border border-gray-100">
-                            <Truck className="w-10 h-10 text-gray-400" />
+                <div className="p-4 sm:p-6 border-b border-gray-50 bg-white flex items-center justify-between z-10 gap-2">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                        <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gray-50 rounded-xl sm:rounded-[1.5rem] flex items-center justify-center border border-gray-100 shrink-0">
+                            <Truck className="w-5 h-5 sm:w-7 sm:h-7 text-gray-400" />
                         </div>
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Delivery Details</h2>
-                                <span className={`px-3 py-1 rounded-md text-[8px] font-black uppercase tracking-widest border ${delivery.status === 'delivered' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
+                        <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-3">
+                                <h2 className="text-base sm:text-2xl font-black text-gray-900 uppercase tracking-tight break-words">Delivery Details</h2>
+                                <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border ${delivery.status === 'delivered' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
                                     }`}>
                                     {delivery.status}
                                 </span>
                                 {delivery.orderId?.brand && (
-                                    <span className={`px-3 py-1 rounded-md text-[8px] font-black uppercase tracking-widest border ${delivery.orderId.brand === 'littleh' ? 'bg-pink-50 text-pink-700 border-pink-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border ${delivery.orderId.brand === 'littleh' ? 'bg-pink-50 text-pink-700 border-pink-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'
                                         }`}>
-                                        {delivery.orderId.brand === 'littleh' ? 'LITTLEH BAKERY' : 'TEAS N TREES'}
+                                        {delivery.orderId.brand === 'littleh' ? 'LITTLEH' : 'TEAS N TREES'}
                                     </span>
                                 )}
                             </div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-1">Order ID: #{delivery.orderId?._number || delivery.orderId?.orderNumber || 'N/A'}</p>
+                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5 break-all">Order ID: #{delivery.orderId?._number || delivery.orderId?.orderNumber || 'N/A'}</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shrink-0"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 no-scrollbar">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
 
                         {/* Left Column: Entities & Details */}
                         <div className="lg:col-span-8 space-y-10">
@@ -255,9 +255,17 @@ const DeliveryDetailsModal = ({ isOpen, onClose, delivery }) => {
                                             <Phone className="w-4 h-4" />
                                         </div>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Customer Name</p>
-                                        <p className="text-xl font-black text-gray-900 uppercase tracking-tight">{delivery.customerId?.name || 'GENERIC_USER'}</p>
+                                    <div className="flex justify-between items-end">
+                                        <div>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Customer Name</p>
+                                            <p className="text-xl font-black text-gray-900 uppercase tracking-tight">{delivery.customerId?.name || 'GENERIC_USER'}</p>
+                                        </div>
+                                        {delivery.deliveryOtp && (
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Delivery OTP</p>
+                                                <p className="text-lg font-black text-emerald-600 tracking-wider bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-100">{delivery.deliveryOtp}</p>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="pt-6 border-t border-gray-50">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Delivery Address</p>
@@ -275,9 +283,17 @@ const DeliveryDetailsModal = ({ isOpen, onClose, delivery }) => {
                                             <ShieldCheck className="w-4 h-4" />
                                         </div>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Rider Name</p>
-                                        <p className="text-xl font-black text-gray-900 uppercase tracking-tight">{delivery.riderId?.name || 'Waiting for Rider'}</p>
+                                    <div className="flex justify-between items-end">
+                                        <div>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Rider Name</p>
+                                            <p className="text-xl font-black text-gray-900 uppercase tracking-tight">{delivery.riderId?.name || 'Waiting for Rider'}</p>
+                                        </div>
+                                        {delivery.pickupOtp && (
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Pickup OTP</p>
+                                                <p className="text-lg font-black text-amber-600 tracking-wider bg-amber-50 px-3 py-1 rounded-xl border border-amber-100">{delivery.pickupOtp}</p>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="pt-6 border-t border-gray-50 flex items-center justify-between">
                                         <div>

@@ -38,7 +38,7 @@ const Settings = () => {
                                 <Icon className="w-4 h-4" />
                                 {tab.label}
                                 {activeTab === tab.id && (
-                                    <div className="absolute bottom-0 left-0 w-full h-1 bg-black rounded-full" />
+                                    <div className="absolute bottom-0 left-0 w-full h-1 bg-[#56763D] rounded-full" />
                                 )}
                             </button>
                         );

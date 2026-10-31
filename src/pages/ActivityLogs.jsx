@@ -360,7 +360,7 @@ const ActivityLogs = () => {
                                     <td className="px-8 py-6 text-right">
                                         <button
                                             onClick={() => { setSelectedLog(log); setShowModal(true); }}
-                                            className="p-3 bg-white border border-gray-100 hover:bg-black hover:text-white rounded-2xl text-gray-400 transition-all shadow-sm hover:shadow-lg group-hover:scale-105"
+                                            className="p-3 bg-white border border-gray-100 hover:bg-[#56763D] hover:text-white rounded-2xl text-gray-400 transition-all shadow-sm hover:shadow-lg group-hover:scale-105"
                                         >
                                             <Eye className="w-4 h-4" />
                                         </button>
@@ -390,7 +390,7 @@ const ActivityLogs = () => {
                                     key={p}
                                     onClick={() => setPage(p)}
                                     className={`w-10 h-10 rounded-xl text-[10px] font-black transition-all shadow-sm ${page === p
-                                        ? 'bg-black text-white shadow-lg scale-110'
+                                        ? 'bg-[#56763D] text-white shadow-lg scale-110'
                                         : 'bg-white text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100'
                                         }`}
                                 >

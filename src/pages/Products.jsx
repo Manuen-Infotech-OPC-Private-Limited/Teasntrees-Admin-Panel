@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import api from '../utils/api';
 import ProductModal from '../components/ProductModal';
+import ExportButton from '../components/ExportButton';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -167,7 +168,8 @@ export default function Products() {
                     >
                         <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
                     </button>
-                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20">
+                    <ExportButton resource="products" filters={{ search: searchTerm, category: filters.category }} />
+                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-[#56763D]/20">
                         <Plus className="w-5 h-5" />
                         New Item
                     </button>
@@ -280,7 +282,7 @@ export default function Products() {
                                         </div>
 
                                         <div className="flex gap-2 pt-2">
-                                            <button onClick={() => navigate(`/${urlBrand}/products/${product._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View</button>
+                                            <button onClick={() => navigate(`/${urlBrand}/products/${product._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View</button>
                                             <button onClick={() => { setEditingProduct(product); setShowModal(true); }} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-indigo-600 hover:text-white transition-all">Edit</button>
                                             <button onClick={() => deleteProduct(product._id)} className="px-4 py-3 bg-red-50 text-red-400 rounded-2xl hover:bg-red-600 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></button>
                                         </div>
@@ -301,7 +303,7 @@ export default function Products() {
                 <div className="flex items-center justify-center gap-2 py-12">
                     <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.max(1, p.currentPage - 1) }))} disabled={pagination.currentPage === 1} className="p-4 bg-white border border-gray-100 rounded-2xl text-xs font-black uppercase disabled:opacity-30">Prev</button>
                     <span className="font-black text-gray-400 uppercase text-xs px-4">Page {pagination.currentPage} of {paginationInfo.totalPages}</span>
-                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="p-4 bg-black text-white rounded-2xl text-xs font-black uppercase disabled:opacity-30">Next</button>
+                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="p-4 bg-[#56763D] text-white rounded-2xl text-xs font-black uppercase disabled:opacity-30">Next</button>
                 </div>
             )}
 

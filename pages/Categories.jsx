@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../utils/api';
 import CategoryModal from '../components/CategoryModal';
+import ExportButton from '../components/ExportButton';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -19,7 +20,7 @@ import {
 } from 'lucide-react';
 
 const CardSkeleton = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 animate-pulse">
         {[1, 2, 3, 4].map(i => (
             <div key={i} className="bg-white rounded-[2rem] border border-gray-100 h-64"></div>
         ))}
@@ -89,12 +90,12 @@ export default function Categories() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Categories</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Manage product categories and structure</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Categories</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage product categories and structure</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 self-end sm:self-auto">
                     <button
                         onClick={() => refetch()}
                         disabled={isSyncing}
@@ -102,14 +103,15 @@ export default function Categories() {
                     >
                         <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
                     </button>
-                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20">
+                    <ExportButton resource="categories" filters={{ search: searchTerm }} />
+                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-[#56763D]/20">
                         <Plus className="w-5 h-5" />
                         New Group
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <StatCard label="Total Categories" value={totalCount} icon={LayoutGrid} theme="blue" desc="Groups in use" loading={loading && !data} />
             </div>
 
@@ -124,23 +126,23 @@ export default function Categories() {
 
             <div className="min-h-[400px]">
                 {categories.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
                         {categories.map((category) => (
-                            <div key={category._id} className="bg-white rounded-[2rem] shadow-sm border-2 border-gray-50 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all flex flex-col group">
-                                <div className="h-40 bg-gray-50/50 flex items-center justify-center relative group-hover:bg-indigo-50 transition-colors">
-                                    <span className="text-7xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 drop-shadow-sm">{category.icon || '📦'}</span>
+                            <div key={category._id} className="bg-white rounded-[2rem] shadow-sm border-2 border-gray-50 overflow-hidden flex flex-col">
+                                <div className="h-40 bg-gray-50/50 flex items-center justify-center relative">
+                                    <span className="text-7xl drop-shadow-sm">{category.icon || '📦'}</span>
                                     <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg border border-gray-100"><span className="text-[8px] font-black uppercase text-gray-400 select-none">Order: {category.displayOrder || 0}</span></div>
                                 </div>
                                 <div className="p-6 flex flex-col flex-1">
                                     <div className="flex-1">
-                                        <h3 className="font-black text-gray-900 uppercase truncate text-sm mb-1">{category.name}</h3>
-                                        <p className="text-[10px] text-gray-400 font-bold line-clamp-2 leading-relaxed">{category.description || 'Global classification group'}</p>
+                                        <h3 className="font-black text-gray-900 uppercase break-words text-sm mb-1">{category.name}</h3>
+                                        <p className="text-[10px] text-gray-400 font-bold break-words leading-relaxed">{category.description || 'Global classification group'}</p>
                                         <p className={`text-[8px] font-black uppercase tracking-widest mt-2 ${category.brand === 'littleh' ? 'text-pink-600' : 'text-emerald-600'}`}>
                                             {category.brand === 'littleh' ? 'LITTLEH BAKERY' : 'TEAS N TREES'}
                                         </p>
                                     </div>
                                     <div className="flex gap-2 mt-6">
-                                        <button onClick={() => navigate(`/${urlBrand}/categories/${category._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View Products</button>
+                                        <button onClick={() => navigate(`/${urlBrand}/categories/${category._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View Products</button>
                                         <button onClick={() => { setEditingCategory(category); setShowModal(true); }} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-indigo-600 hover:text-white transition-all">Edit</button>
                                         <button onClick={() => deleteCategory(category._id)} className="px-4 py-3 bg-red-50 text-red-300 rounded-2xl hover:bg-red-600 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></button>
                                     </div>
@@ -173,7 +175,7 @@ export default function Categories() {
                                 key={i + 1}
                                 onClick={() => setPagination(prev => ({ ...prev, currentPage: i + 1 }))}
                                 className={`w-12 h-12 rounded-2xl text-[10px] font-black transition-all ${pagination.currentPage === i + 1
-                                    ? 'bg-black text-white shadow-xl scale-110'
+                                    ? 'bg-[#56763D] text-white shadow-xl scale-110'
                                     : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'
                                     }`}
                             >
@@ -205,20 +207,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const style = themes[theme] || themes.blue;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tight ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1 py-1 px-3 ${bgColor} rounded-full w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-tight ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

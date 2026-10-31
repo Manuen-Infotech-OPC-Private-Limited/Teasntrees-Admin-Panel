@@ -30,7 +30,7 @@ export default function RiderCard({ rider, onViewDetails, onApprove, onReject, o
                             {rider.isOnline ? 'Active' : 'Offline'}
                         </span>
                         <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase ${rider.isActive ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}`}>
-                            {rider.isActive ? 'Live' : 'Banned'}
+                            {rider.isActive ? 'Live' : 'Inactive'}
                         </span>
                     </div>
                 )}

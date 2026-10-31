@@ -5,6 +5,7 @@ import api from '../utils/api';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import UserDetailsModal from '../components/UserDetailsModal';
+import ExportButton from '../components/ExportButton';
 
 const CardSkeleton = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
@@ -164,23 +165,31 @@ export default function Managers() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Managers</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Manage team leads and admins</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Managers</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage team leads and admins</p>
                 </div>
-                <button
-                    onClick={() => {
-                        queryClient.invalidateQueries({ queryKey: ['managers-stats'] });
-                        managersRefetch();
-                        pendingRefetch();
-                    }}
-                    disabled={managersFetching || pendingFetching}
-                    className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all disabled:opacity-50"
-                >
-                    <RefreshCw className={`w-5 h-5 ${(managersFetching || pendingFetching) ? 'animate-spin text-blue-600' : 'text-gray-400'}`} />
-                </button>
+                <div className="flex items-center gap-3">
+                    <ExportButton
+                        resource="managers"
+                        filters={{
+                            search: searchTerm
+                        }}
+                    />
+                    <button
+                        onClick={() => {
+                            queryClient.invalidateQueries({ queryKey: ['managers-stats'] });
+                            managersRefetch();
+                            pendingRefetch();
+                        }}
+                        disabled={managersFetching || pendingFetching}
+                        className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-5 h-5 ${(managersFetching || pendingFetching) ? 'animate-spin text-blue-600' : 'text-gray-400'}`} />
+                    </button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <StatCard label="Total Managers" value={stats?.total || 0} icon={Users} theme="blue" desc="All accounts" loading={statsLoading} />
                 <StatCard label="Pending Approval" value={stats?.pending || 0} icon={Clock} theme="orange" desc="New requests" loading={statsLoading} />
                 <StatCard label="Active Now" value={stats?.active || 0} icon={ShieldCheck} theme="green" desc="Managers with access" loading={statsLoading} />
@@ -201,7 +210,7 @@ export default function Managers() {
                             <select className="bg-gray-50 border-none rounded-2xl px-6 py-4 md:w-56 text-[10px] font-black uppercase tracking-widest focus:ring-2 focus:ring-blue-500/20" value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
                                 <option value="">Filter Status</option>
                                 <option value="active">Active Only</option>
-                                <option value="inactive">Banned Only</option>
+                                <option value="inactive">Inactive Only</option>
                                 <option value="approved">Approved</option>
                                 <option value="unapproved">Rejected</option>
                             </select>
@@ -212,14 +221,14 @@ export default function Managers() {
 
             <div className="min-h-[400px]">
                 {displayData.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
                         {displayData.map(manager => (
-                            <div key={manager._id} className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 hover:shadow-xl transition-all group">
+                            <div key={manager._id} className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
                                 <div className="flex justify-between items-start mb-6">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all"><UserCog className="w-6 h-6" /></div>
+                                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center"><UserCog className="w-6 h-6" /></div>
                                         <div className="min-w-0">
-                                            <h3 className="font-black text-gray-900 uppercase truncate text-sm">{manager.name}</h3>
+                                            <h3 className="font-black text-gray-900 uppercase break-words text-sm">{manager.name}</h3>
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-tight">{manager.role}</p>
                                         </div>
                                     </div>
@@ -252,7 +261,7 @@ export default function Managers() {
                                                 <Eye className="w-4 h-4" />
                                             </button>
                                             {manager.isApproved === true && (
-                                                <button onClick={() => handleToggleStatus(manager)} className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase border transition-all ${manager.isActive ? 'hover:bg-black hover:text-white border-gray-100' : 'bg-green-600 text-white hover:bg-green-700'}`}>{manager.isActive ? 'Deactivate' : 'Activate'}</button>
+                                                <button onClick={() => handleToggleStatus(manager)} className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase border transition-all ${manager.isActive ? 'hover:bg-[#56763D] hover:text-white border-gray-100' : 'bg-green-600 text-white hover:bg-green-700'}`}>{manager.isActive ? 'Deactivate' : 'Activate'}</button>
                                             )}
                                             <button onClick={() => handleDelete(manager)} className="px-4 py-3 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase hover:bg-red-100">Del</button>
                                         </>
@@ -305,20 +314,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const style = themes[theme] || themes.blue;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tight ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1.5 py-1 px-2 ${bgColor} rounded-lg w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

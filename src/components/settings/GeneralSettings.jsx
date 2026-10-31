@@ -198,7 +198,7 @@ const GeneralSettings = () => {
                             name="gstRate"
                             value={settings.gstRate}
                             onChange={handleChange}
-                            className="w-full px-6 py-4 rounded-[1.2rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-black text-sm"
+                            className="w-full px-6 py-4 rounded-[1.2rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-[#56763D] transition-all font-black text-sm"
                         />
                     </div>
                     <div className="space-y-2">
@@ -208,7 +208,7 @@ const GeneralSettings = () => {
                             name="minOrderAmount"
                             value={settings.minOrderAmount}
                             onChange={handleChange}
-                            className="w-full px-6 py-4 rounded-[1.2rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-black text-sm"
+                            className="w-full px-6 py-4 rounded-[1.2rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-[#56763D] transition-all font-black text-sm"
                         />
                     </div>
                     <div className="col-span-full md:col-span-2 space-y-2">
@@ -218,7 +218,7 @@ const GeneralSettings = () => {
                             name="maxDeliveryDistance"
                             value={settings.maxDeliveryDistance}
                             onChange={handleChange}
-                            className="w-full px-6 py-4 rounded-[1.2rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-black text-sm"
+                            className="w-full px-6 py-4 rounded-[1.2rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-[#56763D] transition-all font-black text-sm"
                         />
                     </div>
                 </div>
@@ -245,7 +245,7 @@ const GeneralSettings = () => {
                             name="riderBaseEarning"
                             value={settings.riderBaseEarning}
                             onChange={handleChange}
-                            className="w-full px-6 py-4 rounded-[1.5rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-black text-sm"
+                            className="w-full px-6 py-4 rounded-[1.5rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-[#56763D] transition-all font-black text-sm"
                         />
                     </div>
                     <div className="space-y-2">
@@ -255,7 +255,7 @@ const GeneralSettings = () => {
                             name="distanceBonusPerKm"
                             value={settings.distanceBonusPerKm}
                             onChange={handleChange}
-                            className="w-full px-6 py-4 rounded-[1.5rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all font-black text-sm"
+                            className="w-full px-6 py-4 rounded-[1.5rem] border border-gray-100 bg-gray-50/30 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-[#56763D] transition-all font-black text-sm"
                         />
                     </div>
                 </div>

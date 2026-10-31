@@ -5,6 +5,7 @@ import api from '../utils/api';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import UserDetailsModal from '../components/UserDetailsModal';
+import ExportButton from '../components/ExportButton';
 
 const CardSkeleton = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
@@ -167,17 +168,25 @@ export default function Managers() {
                     <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Managers</h1>
                     <p className="text-gray-400 mt-0.5 font-bold text-xs">Manage team leads and admins</p>
                 </div>
-                <button
-                    onClick={() => {
-                        queryClient.invalidateQueries({ queryKey: ['managers-stats'] });
-                        managersRefetch();
-                        pendingRefetch();
-                    }}
-                    disabled={managersFetching || pendingFetching}
-                    className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all disabled:opacity-50"
-                >
-                    <RefreshCw className={`w-5 h-5 ${(managersFetching || pendingFetching) ? 'animate-spin text-blue-600' : 'text-gray-400'}`} />
-                </button>
+                <div className="flex items-center gap-3">
+                    <ExportButton
+                        resource="managers"
+                        filters={{
+                            search: searchTerm
+                        }}
+                    />
+                    <button
+                        onClick={() => {
+                            queryClient.invalidateQueries({ queryKey: ['managers-stats'] });
+                            managersRefetch();
+                            pendingRefetch();
+                        }}
+                        disabled={managersFetching || pendingFetching}
+                        className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-5 h-5 ${(managersFetching || pendingFetching) ? 'animate-spin text-blue-600' : 'text-gray-400'}`} />
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -201,7 +210,7 @@ export default function Managers() {
                             <select className="bg-gray-50 border-none rounded-2xl px-6 py-4 md:w-56 text-[10px] font-black uppercase tracking-widest focus:ring-2 focus:ring-blue-500/20" value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
                                 <option value="">Filter Status</option>
                                 <option value="active">Active Only</option>
-                                <option value="inactive">Banned Only</option>
+                                <option value="inactive">Inactive Only</option>
                                 <option value="approved">Approved</option>
                                 <option value="unapproved">Rejected</option>
                             </select>
@@ -252,7 +261,7 @@ export default function Managers() {
                                                 <Eye className="w-4 h-4" />
                                             </button>
                                             {manager.isApproved === true && (
-                                                <button onClick={() => handleToggleStatus(manager)} className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase border transition-all ${manager.isActive ? 'hover:bg-black hover:text-white border-gray-100' : 'bg-green-600 text-white hover:bg-green-700'}`}>{manager.isActive ? 'Deactivate' : 'Activate'}</button>
+                                                <button onClick={() => handleToggleStatus(manager)} className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase border transition-all ${manager.isActive ? 'hover:bg-[#56763D] hover:text-white border-gray-100' : 'bg-green-600 text-white hover:bg-green-700'}`}>{manager.isActive ? 'Deactivate' : 'Activate'}</button>
                                             )}
                                             <button onClick={() => handleDelete(manager)} className="px-4 py-3 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase hover:bg-red-100">Del</button>
                                         </>

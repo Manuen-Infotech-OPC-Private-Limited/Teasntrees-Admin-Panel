@@ -131,14 +131,14 @@ const CartAnalytics = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Cart Analytics</h1>
-                    <p className="text-gray-500 mt-1 font-bold">Real-time abandonment insights</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Cart Analytics</h1>
+                    <p className="text-gray-400 mt-0.5 font-bold text-xs">Real-time abandonment insights</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button onClick={handleSync} disabled={isSyncing} className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-all disabled:opacity-50 group">
                         <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-emerald-600' : 'text-gray-400 group-hover:text-emerald-600'}`} />
                     </button>
-                    <button onClick={handleExport} disabled={isExporting} className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 hover:bg-gray-900">
+                    <button onClick={handleExport} disabled={isExporting} className="flex items-center gap-2 px-6 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 hover:bg-[#466031]">
                         <Download className="w-4 h-4" />
                         {isExporting ? 'Exporting...' : 'Export CSV'}
                     </button>
@@ -146,7 +146,7 @@ const CartAnalytics = () => {
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <StatCard
                     label="Active Carts"
                     value={stats?.totalActiveCarts || 0}
@@ -256,8 +256,8 @@ const CartAnalytics = () => {
                             </div>
                         ) : (
                             stats?.popularCartItems?.map((item, index) => (
-                                <div key={item.productId} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group cursor-default">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shadow-sm transition-transform group-hover:scale-110 ${index === 0 ? 'bg-orange-100 text-orange-600' : index === 1 ? 'bg-gray-100 text-gray-600' : 'bg-orange-50 text-orange-400'}`}>
+                                <div key={item.productId} className="flex items-center gap-4 p-4 rounded-2xl cursor-default">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shadow-sm ${index === 0 ? 'bg-orange-100 text-orange-600' : index === 1 ? 'bg-gray-100 text-gray-600' : 'bg-orange-50 text-orange-400'}`}>
                                         #{index + 1}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -353,7 +353,7 @@ const CartAnalytics = () => {
                                         <td className="px-8 py-6 text-right">
                                             <button
                                                 onClick={() => setSelectedCart(cart)}
-                                                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all shadow-sm transform group-hover:scale-105"
+                                                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#56763D] hover:text-white hover:border-[#56763D] transition-all shadow-sm transform group-hover:scale-105"
                                             >
                                                 <Eye className="w-3 h-3" /> View
                                             </button>
@@ -373,7 +373,7 @@ const CartAnalytics = () => {
                                 key={p}
                                 onClick={() => setPage(p)}
                                 className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all ${page === p
-                                    ? 'bg-black text-white shadow-lg scale-110'
+                                    ? 'bg-[#56763D] text-white shadow-lg scale-110'
                                     : 'bg-white text-gray-400 hover:bg-gray-100'
                                     }`}
                             >
@@ -400,20 +400,24 @@ const StatCard = ({ label, value, icon: Icon, theme, desc, loading }) => {
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
 
     return (
-        <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
-                    <h3 className={`text-3xl font-black text-gray-900 tracking-tight ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
-                    <div className={`flex items-center gap-1.5 py-1 px-2 ${bgColor} rounded-lg w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase ${textColor}`}>{desc}</span>
-                    </div>
+        <div className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{label}</p>
+                    <h3 className={`text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none ${loading ? 'animate-pulse opacity-50' : ''}`}>{value}</h3>
                 </div>
-                <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-7 h-7" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

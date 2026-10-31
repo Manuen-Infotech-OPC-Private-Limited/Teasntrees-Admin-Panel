@@ -2,14 +2,15 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-    ShoppingBag, Search, Eye, Clock, TrendingUp,
+    ShoppingBag, Search, Eye, Clock,
     User, MapPin, Package, ArrowRight, RefreshCw,
     CheckCircle2, PlayCircle, Loader2, CreditCard,
     ChevronDown, ChevronUp, AlertCircle, DollarSign,
-    Filter, Image as ImageIcon, XCircle
+    Filter, Image as ImageIcon, XCircle, Calendar, X
 } from 'lucide-react';
 import OrderStatusBadge from '../components/OrderStatusBadge';
 import OrderDetailsModal from '../components/OrderDetailsModal';
+import ExportButton from '../components/ExportButton';
 import api from '../utils/api';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,6 +23,9 @@ export default function Orders() {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [datePreset, setDatePreset] = useState('all');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState(null);
@@ -31,6 +35,52 @@ export default function Orders() {
         currentPage: 1,
         limit: 15
     });
+
+    // Helper: format YYYY-MM-DD using local time
+    const toLocalDateStr = (dateObj) => {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
+    const handleDatePresetChange = (preset) => {
+        setDatePreset(preset);
+        setPagination(p => ({ ...p, currentPage: 1 }));
+
+        const now = new Date();
+        if (preset === 'all') {
+            setStartDate('');
+            setEndDate('');
+        } else if (preset === 'today') {
+            const todayStr = toLocalDateStr(now);
+            setStartDate(todayStr);
+            setEndDate(todayStr);
+        } else if (preset === 'yesterday') {
+            const yest = new Date(now);
+            yest.setDate(yest.getDate() - 1);
+            const yestStr = toLocalDateStr(yest);
+            setStartDate(yestStr);
+            setEndDate(yestStr);
+        } else if (preset === 'this_week') {
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now);
+            monday.setDate(diff);
+            setStartDate(toLocalDateStr(monday));
+            setEndDate(toLocalDateStr(now));
+        } else if (preset === 'this_month') {
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            setStartDate(toLocalDateStr(start));
+            setEndDate(toLocalDateStr(end));
+        } else if (preset === 'last_month') {
+            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+            setStartDate(toLocalDateStr(start));
+            setEndDate(toLocalDateStr(end));
+        }
+    };
 
     // Fetch Stats
     const { data: stats, isLoading: statsLoading } = useQuery({
@@ -43,16 +93,21 @@ export default function Orders() {
         staleTime: 30000
     });
 
-    // Fetch Orders with status filter
+    // Fetch Orders with status and date filters
     const { data: ordersData, isLoading: loading, isFetching, refetch } = useQuery({
-        queryKey: ['orders', pagination.currentPage, searchTerm, statusFilter, urlBrand],
+        queryKey: ['orders', pagination.currentPage, searchTerm, statusFilter, startDate, endDate, urlBrand],
         queryFn: async () => {
             const params = new URLSearchParams({
                 page: pagination.currentPage,
                 limit: pagination.limit
             });
             if (searchTerm) params.append('search', searchTerm);
-            if (statusFilter !== 'all') params.append('status', statusFilter);
+            // 'stale' is not a status: it lists orders the stale-order job has
+            // flagged (no activity for 24h) that are still open.
+            if (statusFilter === 'stale') params.append('stale', 'true');
+            else if (statusFilter !== 'all') params.append('status', statusFilter);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
             const response = await api.get(`/admin/orders?${params.toString()}`);
             return response.data;
         },
@@ -69,11 +124,19 @@ export default function Orders() {
             queryClient.invalidateQueries({ queryKey: ['orders'] });
             queryClient.invalidateQueries({ queryKey: ['orders-stats'] });
         };
+        // The stale-order job flagged orders nobody has touched for 24 hours.
+        const handleStale = (data = {}) => {
+            const n = data.orders?.length || 0;
+            toast(`${n === 1 ? `Order #${data.orders[0].orderNumber} has` : `${n} orders have`} had no activity for 24 hours and will be cancelled automatically unless someone acts. See "Needs attention".`, { icon: '⏰', duration: 15000 });
+            handleUpdate();
+        };
         socket.on('order:new', handleUpdate);
         socket.on('order:status-updated', handleUpdate);
+        socket.on('order:stale', handleStale);
         return () => {
             socket.off('order:new', handleUpdate);
             socket.off('order:status-updated', handleUpdate);
+            socket.off('order:stale', handleStale);
         };
     }, [socket, queryClient]);
 
@@ -116,6 +179,7 @@ export default function Orders() {
 
     const filterOptions = [
         { label: 'All', value: 'all' },
+        { label: 'Needs attention', value: 'stale' },
         { label: 'Pending', value: 'pending' },
         { label: 'Confirmed', value: 'confirmed' },
         { label: 'Preparing', value: 'preparing' },
@@ -126,57 +190,148 @@ export default function Orders() {
 
     return (
         <div className="space-y-6 max-w-[1600px] mx-auto">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Orders Management</h1>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Management interface</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Orders Management</h1>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Management interface</p>
                 </div>
-                <button
-                    onClick={() => refetch()}
-                    disabled={isFetching}
-                    className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase shadow-lg disabled:opacity-50"
-                >
-                    <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-                    Sync
-                </button>
+                <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <ExportButton
+                        resource="orders"
+                        filters={{
+                            status: statusFilter === 'stale' ? '' : (statusFilter === 'all' ? '' : statusFilter),
+                            startDate,
+                            endDate,
+                            search: searchTerm
+                        }}
+                    />
+                    <button
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                        className="flex items-center gap-2 px-5 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase shadow-lg disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </button>
+                </div>
             </div>
 
             {/* Gradient Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {statCards.map((stat, index) => (
                     <StatCard key={index} {...stat} />
                 ))}
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 space-y-4">
-                <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-2 flex items-center gap-1">
-                        <Filter className="w-3 h-3" /> Filter By:
-                    </span>
-                    {filterOptions.map((opt) => (
-                        <button
-                            key={opt.value}
-                            onClick={() => { setStatusFilter(opt.value); setPagination(p => ({ ...p, currentPage: 1 })); }}
-                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${statusFilter === opt.value
-                                ? 'bg-black text-white shadow-lg'
-                                : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
-                                }`}
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-5 sm:p-6 space-y-4">
+                <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by order #, customer name, mobile..."
+                            value={searchTerm}
+                            onChange={(e) => { setSearchTerm(e.target.value); setPagination(p => ({ ...p, currentPage: 1 })); }}
+                            className="w-full pl-11 pr-10 py-3.5 bg-gray-50 border border-transparent focus:border-black rounded-2xl text-xs font-bold focus:outline-hidden transition-all"
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={() => setSearchTerm('')}
+                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#56763D] p-1"
+                            >
+                                <X className="w-3.5 h-3.5" />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Dropdown Filters */}
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                        {/* Status Dropdown */}
+                        <div className="relative min-w-[190px] w-full sm:w-auto">
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => {
+                                    setStatusFilter(e.target.value);
+                                    setPagination(p => ({ ...p, currentPage: 1 }));
+                                }}
+                                className="w-full bg-gray-50 border border-transparent focus:border-black rounded-2xl py-3.5 px-4 text-xs font-black uppercase text-gray-800 tracking-wider appearance-none focus:outline-hidden cursor-pointer pr-10 shadow-xs"
+                            >
+                                <option value="all">STATUS: ALL</option>
+                                <option value="stale">NEEDS ATTENTION</option>
+                                <option value="pending">PENDING</option>
+                                <option value="confirmed">CONFIRMED</option>
+                                <option value="preparing">PREPARING</option>
+                                <option value="ready">READY</option>
+                                <option value="delivered">DELIVERED</option>
+                                <option value="cancelled">CANCELLED</option>
+                            </select>
+                            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+
+                        {/* Date Range Preset Dropdown */}
+                        <div className="relative min-w-[200px] w-full sm:w-auto">
+                            <select
+                                value={datePreset}
+                                onChange={(e) => handleDatePresetChange(e.target.value)}
+                                className="w-full bg-gray-50 border border-transparent focus:border-black rounded-2xl py-3.5 px-4 text-xs font-black uppercase text-gray-800 tracking-wider appearance-none focus:outline-hidden cursor-pointer pr-10 shadow-xs"
+                            >
+                                <option value="all">DATE: ALL TIME</option>
+                                <option value="today">TODAY</option>
+                                <option value="yesterday">YESTERDAY</option>
+                                <option value="this_week">THIS WEEK</option>
+                                <option value="this_month">THIS MONTH</option>
+                                <option value="last_month">LAST MONTH</option>
+                                <option value="custom">CUSTOM RANGE...</option>
+                            </select>
+                            <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+                    </div>
                 </div>
-                <div className="relative w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search by order number or customer name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-6 py-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-bakery-primary outline-none"
-                    />
-                </div>
+
+                {/* Date Picker Row (when custom range is selected or active dates exist) */}
+                {(datePreset === 'custom' || startDate || endDate) && (
+                    <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100 bg-gray-50/50 p-4 rounded-2xl">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                            <Calendar className="w-3.5 h-3.5 text-gray-500" /> Date Filter:
+                        </span>
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">From</span>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setDatePreset('custom');
+                                    setPagination(p => ({ ...p, currentPage: 1 }));
+                                }}
+                                className="bg-white border border-gray-200 focus:border-black rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-hidden"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">To</span>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setDatePreset('custom');
+                                    setPagination(p => ({ ...p, currentPage: 1 }));
+                                }}
+                                className="bg-white border border-gray-200 focus:border-black rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-hidden"
+                            />
+                        </div>
+                        {(startDate || endDate) && (
+                            <button
+                                onClick={() => handleDatePresetChange('all')}
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 text-[10px] font-black uppercase transition-all shadow-xs ml-auto"
+                            >
+                                <X className="w-3 h-3" /> Clear Dates
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* High-Density Order Table */}
@@ -200,13 +355,13 @@ export default function Orders() {
                                             <div className="flex flex-col">
                                                 <span className="font-black text-gray-900 text-sm">#{order.orderNumber}</span>
                                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter mt-1 italic">
-                                                    {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    {new Date(order.createdAt).toLocaleDateString([], { day: '2-digit', month: 'short' })} • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col max-w-[450px]">
-                                                <span className="font-black text-gray-800 text-xs uppercase truncate mb-2">{order.customerId?.name || '---'}</span>
+                                                <span className="font-black text-gray-800 text-xs uppercase leading-tight break-words mb-2">{order.customerId?.name || '---'}</span>
                                                 <div className="flex flex-col gap-1.5">
                                                     {order.items.map((item, i) => (
                                                         <div key={i} className="flex flex-col">
@@ -256,6 +411,16 @@ export default function Orders() {
                                                     isUpdating={updatingId === order._id}
                                                 />
                                             </div>
+                                            {order.staleFlaggedAt && !['delivered', 'cancelled'].includes(order.status) && (
+                                                <p className="mt-2 text-center text-[8px] font-black uppercase tracking-widest text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2 py-1" title="No change for 24 hours. Move it on, or it is cancelled automatically.">
+                                                    No activity 24h · auto-cancels {new Date(new Date(order.staleFlaggedAt).getTime() + 24 * 60 * 60 * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}
+                                                </p>
+                                            )}
+                                            {order.status === 'cancelled' && order.cancelReason?.startsWith('Closed automatically') && (
+                                                <p className="mt-2 text-center text-[8px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 border border-gray-200 rounded-md px-2 py-1" title={order.cancelReason}>
+                                                    Auto-cancelled: no activity
+                                                </p>
+                                            )}
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col items-center gap-2">
@@ -284,13 +449,13 @@ export default function Orders() {
                                                 </div>
                                                 <button
                                                     onClick={() => toggleExpand(order._id)}
-                                                    className={`p-2 rounded-xl transition-all ${expandedOrder === order._id ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+                                                    className={`p-2 rounded-xl transition-all ${expandedOrder === order._id ? 'bg-[#56763D] text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
                                                 >
                                                     {expandedOrder === order._id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                                 </button>
                                                 <button
                                                     onClick={() => { setSelectedOrder(order); setShowDetailsModal(true); }}
-                                                    className="p-2 bg-gray-100 text-gray-400 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm"
+                                                    className="p-2 bg-gray-100 text-gray-400 rounded-xl hover:bg-[#56763D] hover:text-white transition-all shadow-sm"
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                 </button>
@@ -343,7 +508,7 @@ export default function Orders() {
                                                                                         href={item.customizationDetails.referenceImage}
                                                                                         target="_blank"
                                                                                         rel="noreferrer"
-                                                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-[9px] font-black uppercase text-gray-500 hover:bg-black hover:text-white transition-all shadow-sm"
+                                                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-[9px] font-black uppercase text-gray-500 hover:bg-[#56763D] hover:text-white transition-all shadow-sm"
                                                                                     >
                                                                                         <ImageIcon className="w-3 h-3" /> View Reference Design
                                                                                     </a>
@@ -409,7 +574,7 @@ export default function Orders() {
                                                                 )}
                                                                 <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
                                                                     <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">Total Amount</span>
-                                                                    <span className="text-xl font-black text-cafe-emerald tracking-tighter">₹{order.total}</span>
+                                                                    <span className="text-xl font-black text-emerald-700 tracking-tighter">₹{order.total}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -440,7 +605,7 @@ export default function Orders() {
                     <div className="px-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm text-[10px] font-black text-gray-400 uppercase tracking-widest">
                         Page <span className="text-gray-900">{pagination.currentPage}</span> of <span className="text-gray-900">{paginationInfo.totalPages}</span>
                     </div>
-                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white shadow-lg disabled:opacity-30 hover:scale-105 active:scale-95 transition-all"><ArrowRight className="w-5 h-5" /></button>
+                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#56763D] text-white shadow-lg disabled:opacity-30 hover:scale-105 active:scale-95 transition-all"><ArrowRight className="w-5 h-5" /></button>
                 </div>
             )}
 
@@ -461,20 +626,24 @@ const StatCard = ({ title, value, icon: Icon, theme, desc, onClick }) => {
     const style = themes[theme] || themes.blue;
     const [gradientFrom, gradientTo, shadow, textColor, bgColor] = style.split(' ');
     return (
-        <div onClick={onClick} className="relative overflow-hidden bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group active:scale-95">
-            <div className="relative flex items-center justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] leading-none">{title}</p>
-                    <h3 className="text-3xl font-black text-gray-900 tracking-tight">{value}</h3>
-                    <div className={`flex items-center gap-1 py-1 px-3 ${bgColor} rounded-full w-fit`}>
-                        <ArrowRight className={`w-3 h-3 ${textColor}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-tight ${textColor}`}>{desc}</span>
-                    </div>
+        <div onClick={onClick} className="relative overflow-hidden bg-white p-4 sm:p-5 rounded-[1.5rem] border border-gray-100 shadow-sm cursor-pointer flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 min-w-0 flex-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{title}</p>
+                    <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none">{value}</h3>
                 </div>
-                <div className={`p-4 rounded-[1.2rem] bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-lg ${shadow} transform group-hover:rotate-12 transition-all`}>
-                    <Icon className="w-6 h-6" />
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white shadow-md ${shadow} shrink-0`}>
+                    <Icon className="w-5 h-5" />
                 </div>
             </div>
+            {desc && (
+                <div className="mt-3">
+                    <div className={`inline-flex items-center gap-1 py-0.5 px-2.5 ${bgColor} rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-tight ${textColor}`}>
+                        <ArrowRight className="w-2.5 h-2.5 shrink-0" />
+                        <span className="leading-tight">{desc}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -506,7 +675,7 @@ const StatusControl = ({ currentStatus, onUpdate, isUpdating }) => {
         <div className="flex items-center gap-2">
             <button
                 onClick={() => onUpdate(nextStep.id)}
-                className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-md shadow-black/10"
+                className="flex items-center gap-2 px-4 py-2 bg-[#56763D] text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md shadow-[#56763D]/10"
             >
                 <nextStep.icon className="w-3 h-3" />
                 {nextStep.label}

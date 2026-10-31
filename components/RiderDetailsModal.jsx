@@ -66,30 +66,30 @@ export default function RiderDetailsModal({ isOpen, onClose, rider, onApprove, o
         <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100 flex flex-col">
                 {/* Header */}
-                <div className="bg-white border-b border-gray-50 p-8 flex items-center justify-between z-10">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center border border-emerald-100">
-                            <Bike className="w-10 h-10 text-emerald-600" />
+                <div className="bg-white border-b border-gray-50 p-5 sm:p-6 flex items-center justify-between z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-emerald-50 rounded-[1.5rem] flex items-center justify-center border border-emerald-100">
+                            <Bike className="w-7 h-7 text-emerald-600" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">{rider.name}</h2>
-                            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mt-1 italic">Rider Profile</p>
+                            <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">{rider.name}</h2>
+                            <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mt-0.5">Rider Profile</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div className="border-b border-gray-50 px-8 bg-gray-50/30">
-                    <div className="flex gap-8">
+                <div className="border-b border-gray-50 px-6 bg-gray-50/30">
+                    <div className="flex gap-6">
                         <button
                             onClick={() => setActiveTab('details')}
-                            className={`px-4 py-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'details'
+                            className={`px-3 py-4 text-[9px] font-black uppercase tracking-widest transition-all relative ${activeTab === 'details'
                                 ? 'text-emerald-700'
                                 : 'text-gray-400 hover:text-emerald-700'
                                 }`}
@@ -161,6 +161,10 @@ export default function RiderDetailsModal({ isOpen, onClose, rider, onApprove, o
                                             <div>
                                                 <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Phone Number</p>
                                                 <p className="font-black text-gray-900 text-sm tracking-tight">{rider.mobile}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-1 italic">Verification PIN</p>
+                                                <p className="font-black text-emerald-700 text-lg tracking-[0.2em]">{rider.verificationPin || 'N/A'}</p>
                                             </div>
                                             <div className="col-span-2">
                                                 <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Email Address</p>

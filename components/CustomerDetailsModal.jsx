@@ -64,33 +64,33 @@ const CustomerDetailsModal = ({ customer, onClose, onUpdate }) => {
     const stats = customerDetails.stats || {};
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100 flex flex-col">
+        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+            <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-100 flex flex-col my-auto">
                 {/* Header */}
-                <div className="bg-white border-b border-gray-50 p-8 flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center border border-gray-100">
-                            <User className="w-10 h-10 text-gray-400" />
+                <div className="bg-white border-b border-gray-50 p-4 sm:p-5 flex items-center justify-between">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 rounded-[1.5rem] flex items-center justify-center border border-gray-100 flex-shrink-0">
+                            <User className="w-6 h-6 sm:w-7 sm:h-7 text-gray-400" />
                         </div>
-                        <div>
-                            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">{customerDetails.name || 'N/A'}</h2>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-1 italic">Customer Record</p>
+                        <div className="min-w-0">
+                            <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight truncate">{customerDetails.name || 'N/A'}</h2>
+                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Customer Record</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all"
+                        className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all flex-shrink-0"
                     >
-                        <X className="w-6 h-6" />
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div className="border-b border-gray-50 px-8 bg-gray-50/30">
-                    <div className="flex gap-8">
+                <div className="border-b border-gray-50 px-6 bg-gray-50/30">
+                    <div className="flex gap-6">
                         <button
                             onClick={() => setActiveTab('info')}
-                            className={`px-4 py-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'info'
+                            className={`px-3 py-4 text-[9px] font-black uppercase tracking-widest transition-all relative ${activeTab === 'info'
                                 ? 'text-gray-900'
                                 : 'text-gray-400 hover:text-gray-900'
                                 }`}
@@ -100,7 +100,7 @@ const CustomerDetailsModal = ({ customer, onClose, onUpdate }) => {
                         </button>
                         <button
                             onClick={() => setActiveTab('orders')}
-                            className={`px-4 py-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === 'orders'
+                            className={`px-3 py-4 text-[9px] font-black uppercase tracking-widest transition-all relative ${activeTab === 'orders'
                                 ? 'text-gray-900'
                                 : 'text-gray-400 hover:text-gray-900'
                                 }`}

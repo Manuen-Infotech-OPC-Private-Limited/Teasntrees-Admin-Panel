@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Coffee, ArrowRight, Sparkles, User, Mail } from 'lucide-react';
+import { ArrowRight, Sparkles, User, Mail } from 'lucide-react';
 import { auth } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import logo from '../assets/logoteasntrees.png';
 
 export default function Login() {
     const [mobile, setMobile] = useState('');
@@ -120,16 +121,15 @@ export default function Login() {
             <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 w-full max-w-md border border-white/20">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl mb-4 shadow-lg transform hover:scale-105 transition-transform">
-                        <Coffee className="w-10 h-10 text-white" />
-                    </div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
-                        TeasNTrees
-                    </h1>
-                    <div className="flex items-center justify-center gap-2 text-gray-600">
-                        <Sparkles className="w-4 h-4 text-green-600" />
-                        <p className="font-medium">Admin Portal</p>
-                        <Sparkles className="w-4 h-4 text-green-600" />
+                    <img
+                        src={logo}
+                        alt="Teas N Trees"
+                        className="h-14 sm:h-16 w-auto mx-auto object-contain mb-3 drop-shadow-sm"
+                    />
+                    <div className="flex items-center justify-center gap-2 text-stone-500">
+                        <Sparkles className="w-3.5 h-3.5 text-[#56763D]" />
+                        <p className="font-bold text-xs uppercase tracking-[0.2em] text-[#56763D]">Admin Portal</p>
+                        <Sparkles className="w-3.5 h-3.5 text-[#56763D]" />
                     </div>
                 </div>
 
