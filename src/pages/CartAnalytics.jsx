@@ -138,7 +138,7 @@ const CartAnalytics = () => {
                     <button onClick={handleSync} disabled={isSyncing} className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-all disabled:opacity-50 group">
                         <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-emerald-600' : 'text-gray-400 group-hover:text-emerald-600'}`} />
                     </button>
-                    <button onClick={handleExport} disabled={isExporting} className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 hover:bg-gray-900">
+                    <button onClick={handleExport} disabled={isExporting} className="flex items-center gap-2 px-6 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 hover:bg-[#466031]">
                         <Download className="w-4 h-4" />
                         {isExporting ? 'Exporting...' : 'Export CSV'}
                     </button>
@@ -353,7 +353,7 @@ const CartAnalytics = () => {
                                         <td className="px-8 py-6 text-right">
                                             <button
                                                 onClick={() => setSelectedCart(cart)}
-                                                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all shadow-sm transform group-hover:scale-105"
+                                                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#56763D] hover:text-white hover:border-[#56763D] transition-all shadow-sm transform group-hover:scale-105"
                                             >
                                                 <Eye className="w-3 h-3" /> View
                                             </button>
@@ -373,7 +373,7 @@ const CartAnalytics = () => {
                                 key={p}
                                 onClick={() => setPage(p)}
                                 className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all ${page === p
-                                    ? 'bg-black text-white shadow-lg scale-110'
+                                    ? 'bg-[#56763D] text-white shadow-lg scale-110'
                                     : 'bg-white text-gray-400 hover:bg-gray-100'
                                     }`}
                             >

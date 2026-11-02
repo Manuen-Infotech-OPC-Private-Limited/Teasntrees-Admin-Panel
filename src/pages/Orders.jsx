@@ -2,14 +2,15 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-    ShoppingBag, Search, Eye, Clock, TrendingUp,
+    ShoppingBag, Search, Eye, Clock,
     User, MapPin, Package, ArrowRight, RefreshCw,
     CheckCircle2, PlayCircle, Loader2, CreditCard,
     ChevronDown, ChevronUp, AlertCircle, DollarSign,
-    Filter, Image as ImageIcon, XCircle
+    Filter, Image as ImageIcon, XCircle, Calendar, X
 } from 'lucide-react';
 import OrderStatusBadge from '../components/OrderStatusBadge';
 import OrderDetailsModal from '../components/OrderDetailsModal';
+import ExportButton from '../components/ExportButton';
 import api from '../utils/api';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,6 +23,9 @@ export default function Orders() {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [datePreset, setDatePreset] = useState('all');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState(null);
@@ -31,6 +35,52 @@ export default function Orders() {
         currentPage: 1,
         limit: 15
     });
+
+    // Helper: format YYYY-MM-DD using local time
+    const toLocalDateStr = (dateObj) => {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
+    const handleDatePresetChange = (preset) => {
+        setDatePreset(preset);
+        setPagination(p => ({ ...p, currentPage: 1 }));
+
+        const now = new Date();
+        if (preset === 'all') {
+            setStartDate('');
+            setEndDate('');
+        } else if (preset === 'today') {
+            const todayStr = toLocalDateStr(now);
+            setStartDate(todayStr);
+            setEndDate(todayStr);
+        } else if (preset === 'yesterday') {
+            const yest = new Date(now);
+            yest.setDate(yest.getDate() - 1);
+            const yestStr = toLocalDateStr(yest);
+            setStartDate(yestStr);
+            setEndDate(yestStr);
+        } else if (preset === 'this_week') {
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now);
+            monday.setDate(diff);
+            setStartDate(toLocalDateStr(monday));
+            setEndDate(toLocalDateStr(now));
+        } else if (preset === 'this_month') {
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            setStartDate(toLocalDateStr(start));
+            setEndDate(toLocalDateStr(end));
+        } else if (preset === 'last_month') {
+            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+            setStartDate(toLocalDateStr(start));
+            setEndDate(toLocalDateStr(end));
+        }
+    };
 
     // Fetch Stats
     const { data: stats, isLoading: statsLoading } = useQuery({
@@ -43,9 +93,9 @@ export default function Orders() {
         staleTime: 30000
     });
 
-    // Fetch Orders with status filter
+    // Fetch Orders with status and date filters
     const { data: ordersData, isLoading: loading, isFetching, refetch } = useQuery({
-        queryKey: ['orders', pagination.currentPage, searchTerm, statusFilter, urlBrand],
+        queryKey: ['orders', pagination.currentPage, searchTerm, statusFilter, startDate, endDate, urlBrand],
         queryFn: async () => {
             const params = new URLSearchParams({
                 page: pagination.currentPage,
@@ -56,6 +106,8 @@ export default function Orders() {
             // flagged (no activity for 24h) that are still open.
             if (statusFilter === 'stale') params.append('stale', 'true');
             else if (statusFilter !== 'all') params.append('status', statusFilter);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
             const response = await api.get(`/admin/orders?${params.toString()}`);
             return response.data;
         },
@@ -143,14 +195,25 @@ export default function Orders() {
                     <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Orders Management</h1>
                     <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Management interface</p>
                 </div>
-                <button
-                    onClick={() => refetch()}
-                    disabled={isFetching}
-                    className="flex items-center gap-2 px-5 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase shadow-lg disabled:opacity-50 self-end sm:self-auto"
-                >
-                    <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-                    Sync
-                </button>
+                <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <ExportButton
+                        resource="orders"
+                        filters={{
+                            status: statusFilter === 'stale' ? '' : (statusFilter === 'all' ? '' : statusFilter),
+                            startDate,
+                            endDate,
+                            search: searchTerm
+                        }}
+                    />
+                    <button
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                        className="flex items-center gap-2 px-5 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase shadow-lg disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </button>
+                </div>
             </div>
 
             {/* Gradient Stats Cards */}
@@ -161,34 +224,114 @@ export default function Orders() {
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 space-y-4">
-                <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-2 flex items-center gap-1">
-                        <Filter className="w-3 h-3" /> Filter By:
-                    </span>
-                    {filterOptions.map((opt) => (
-                        <button
-                            key={opt.value}
-                            onClick={() => { setStatusFilter(opt.value); setPagination(p => ({ ...p, currentPage: 1 })); }}
-                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${statusFilter === opt.value
-                                ? 'bg-black text-white shadow-lg'
-                                : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
-                                }`}
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-5 sm:p-6 space-y-4">
+                <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by order #, customer name, mobile..."
+                            value={searchTerm}
+                            onChange={(e) => { setSearchTerm(e.target.value); setPagination(p => ({ ...p, currentPage: 1 })); }}
+                            className="w-full pl-11 pr-10 py-3.5 bg-gray-50 border border-transparent focus:border-black rounded-2xl text-xs font-bold focus:outline-hidden transition-all"
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={() => setSearchTerm('')}
+                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#56763D] p-1"
+                            >
+                                <X className="w-3.5 h-3.5" />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Dropdown Filters */}
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                        {/* Status Dropdown */}
+                        <div className="relative min-w-[190px] w-full sm:w-auto">
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => {
+                                    setStatusFilter(e.target.value);
+                                    setPagination(p => ({ ...p, currentPage: 1 }));
+                                }}
+                                className="w-full bg-gray-50 border border-transparent focus:border-black rounded-2xl py-3.5 px-4 text-xs font-black uppercase text-gray-800 tracking-wider appearance-none focus:outline-hidden cursor-pointer pr-10 shadow-xs"
+                            >
+                                <option value="all">STATUS: ALL</option>
+                                <option value="stale">NEEDS ATTENTION</option>
+                                <option value="pending">PENDING</option>
+                                <option value="confirmed">CONFIRMED</option>
+                                <option value="preparing">PREPARING</option>
+                                <option value="ready">READY</option>
+                                <option value="delivered">DELIVERED</option>
+                                <option value="cancelled">CANCELLED</option>
+                            </select>
+                            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+
+                        {/* Date Range Preset Dropdown */}
+                        <div className="relative min-w-[200px] w-full sm:w-auto">
+                            <select
+                                value={datePreset}
+                                onChange={(e) => handleDatePresetChange(e.target.value)}
+                                className="w-full bg-gray-50 border border-transparent focus:border-black rounded-2xl py-3.5 px-4 text-xs font-black uppercase text-gray-800 tracking-wider appearance-none focus:outline-hidden cursor-pointer pr-10 shadow-xs"
+                            >
+                                <option value="all">DATE: ALL TIME</option>
+                                <option value="today">TODAY</option>
+                                <option value="yesterday">YESTERDAY</option>
+                                <option value="this_week">THIS WEEK</option>
+                                <option value="this_month">THIS MONTH</option>
+                                <option value="last_month">LAST MONTH</option>
+                                <option value="custom">CUSTOM RANGE...</option>
+                            </select>
+                            <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+                    </div>
                 </div>
-                <div className="relative w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search by order number or customer name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-6 py-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-bakery-primary outline-none"
-                    />
-                </div>
+
+                {/* Date Picker Row (when custom range is selected or active dates exist) */}
+                {(datePreset === 'custom' || startDate || endDate) && (
+                    <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100 bg-gray-50/50 p-4 rounded-2xl">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                            <Calendar className="w-3.5 h-3.5 text-gray-500" /> Date Filter:
+                        </span>
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">From</span>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setDatePreset('custom');
+                                    setPagination(p => ({ ...p, currentPage: 1 }));
+                                }}
+                                className="bg-white border border-gray-200 focus:border-black rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-hidden"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">To</span>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setDatePreset('custom');
+                                    setPagination(p => ({ ...p, currentPage: 1 }));
+                                }}
+                                className="bg-white border border-gray-200 focus:border-black rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-hidden"
+                            />
+                        </div>
+                        {(startDate || endDate) && (
+                            <button
+                                onClick={() => handleDatePresetChange('all')}
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 text-[10px] font-black uppercase transition-all shadow-xs ml-auto"
+                            >
+                                <X className="w-3 h-3" /> Clear Dates
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* High-Density Order Table */}
@@ -306,13 +449,13 @@ export default function Orders() {
                                                 </div>
                                                 <button
                                                     onClick={() => toggleExpand(order._id)}
-                                                    className={`p-2 rounded-xl transition-all ${expandedOrder === order._id ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+                                                    className={`p-2 rounded-xl transition-all ${expandedOrder === order._id ? 'bg-[#56763D] text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
                                                 >
                                                     {expandedOrder === order._id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                                 </button>
                                                 <button
                                                     onClick={() => { setSelectedOrder(order); setShowDetailsModal(true); }}
-                                                    className="p-2 bg-gray-100 text-gray-400 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm"
+                                                    className="p-2 bg-gray-100 text-gray-400 rounded-xl hover:bg-[#56763D] hover:text-white transition-all shadow-sm"
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                 </button>
@@ -365,7 +508,7 @@ export default function Orders() {
                                                                                         href={item.customizationDetails.referenceImage}
                                                                                         target="_blank"
                                                                                         rel="noreferrer"
-                                                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-[9px] font-black uppercase text-gray-500 hover:bg-black hover:text-white transition-all shadow-sm"
+                                                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-[9px] font-black uppercase text-gray-500 hover:bg-[#56763D] hover:text-white transition-all shadow-sm"
                                                                                     >
                                                                                         <ImageIcon className="w-3 h-3" /> View Reference Design
                                                                                     </a>
@@ -431,7 +574,7 @@ export default function Orders() {
                                                                 )}
                                                                 <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
                                                                     <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">Total Amount</span>
-                                                                    <span className="text-xl font-black text-cafe-emerald tracking-tighter">₹{order.total}</span>
+                                                                    <span className="text-xl font-black text-emerald-700 tracking-tighter">₹{order.total}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -462,7 +605,7 @@ export default function Orders() {
                     <div className="px-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm text-[10px] font-black text-gray-400 uppercase tracking-widest">
                         Page <span className="text-gray-900">{pagination.currentPage}</span> of <span className="text-gray-900">{paginationInfo.totalPages}</span>
                     </div>
-                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white shadow-lg disabled:opacity-30 hover:scale-105 active:scale-95 transition-all"><ArrowRight className="w-5 h-5" /></button>
+                    <button onClick={() => setPagination(p => ({ ...p, currentPage: Math.min(paginationInfo.totalPages, p.currentPage + 1) }))} disabled={pagination.currentPage === paginationInfo.totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#56763D] text-white shadow-lg disabled:opacity-30 hover:scale-105 active:scale-95 transition-all"><ArrowRight className="w-5 h-5" /></button>
                 </div>
             )}
 
@@ -532,7 +675,7 @@ const StatusControl = ({ currentStatus, onUpdate, isUpdating }) => {
         <div className="flex items-center gap-2">
             <button
                 onClick={() => onUpdate(nextStep.id)}
-                className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md shadow-black/10"
+                className="flex items-center gap-2 px-4 py-2 bg-[#56763D] text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md shadow-[#56763D]/10"
             >
                 <nextStep.icon className="w-3 h-3" />
                 {nextStep.label}

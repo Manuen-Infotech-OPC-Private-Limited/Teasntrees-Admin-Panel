@@ -264,7 +264,7 @@ export default function ProductModal({ isOpen, onClose, product, onSuccess, bran
                                         <button
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, sizeOptions: [...prev.sizeOptions, { size: '', price: '' }] }))}
-                                            className="w-full py-2.5 bg-gray-50 text-gray-400 rounded-xl text-[9px] font-black uppercase hover:bg-black hover:text-white transition-all border-2 border-dashed border-gray-100"
+                                            className="w-full py-2.5 bg-gray-50 text-gray-400 rounded-xl text-[9px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all border-2 border-dashed border-gray-100"
                                         >
                                             + Add Size Variation
                                         </button>

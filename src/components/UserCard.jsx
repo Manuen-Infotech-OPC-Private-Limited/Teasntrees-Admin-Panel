@@ -36,7 +36,7 @@ const UserCard = ({ user, onToggleStatus, onDelete, onViewDetails }) => {
                     onClick={() => onToggleStatus(user)}
                     className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase transition-all shrink-0 ${isActive ? 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white' : 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white'}`}
                 >
-                    {isActive ? 'Active' : 'Banned'}
+                    {isActive ? 'Active' : 'Inactive'}
                 </button>
             </div>
 

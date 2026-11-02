@@ -3,11 +3,13 @@ import { useParams } from 'react-router-dom';
 import {
     Truck, Package, Bike, Clock,
     CheckCircle2, XCircle, Search,
-    RefreshCw, Eye, MapPin, ArrowRight, IndianRupee
+    RefreshCw, Eye, MapPin, ArrowRight, IndianRupee,
+    ChevronDown, Calendar, X
 } from 'lucide-react';
 import api from '../utils/api';
 import { useSocket } from '../context/SocketContext';
 import DeliveryDetailsModal from '../components/DeliveryDetailsModal';
+import ExportButton from '../components/ExportButton';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const TableSkeleton = () => (
@@ -24,11 +26,58 @@ const Deliveries = () => {
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [datePreset, setDatePreset] = useState('all');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [page, setPage] = useState(1);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
+    // Helper: format YYYY-MM-DD using local time
+    const toLocalDateStr = (dateObj) => {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
 
+    const handleDatePresetChange = (preset) => {
+        setDatePreset(preset);
+        setPage(1);
+
+        const now = new Date();
+        if (preset === 'all') {
+            setStartDate('');
+            setEndDate('');
+        } else if (preset === 'today') {
+            const todayStr = toLocalDateStr(now);
+            setStartDate(todayStr);
+            setEndDate(todayStr);
+        } else if (preset === 'yesterday') {
+            const yest = new Date(now);
+            yest.setDate(yest.getDate() - 1);
+            const yestStr = toLocalDateStr(yest);
+            setStartDate(yestStr);
+            setEndDate(yestStr);
+        } else if (preset === 'this_week') {
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now);
+            monday.setDate(diff);
+            setStartDate(toLocalDateStr(monday));
+            setEndDate(toLocalDateStr(now));
+        } else if (preset === 'this_month') {
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            setStartDate(toLocalDateStr(start));
+            setEndDate(toLocalDateStr(end));
+        } else if (preset === 'last_month') {
+            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+            setStartDate(toLocalDateStr(start));
+            setEndDate(toLocalDateStr(end));
+        }
+    };
 
     // Fetch Stats
     const { data: stats, isLoading: statsLoading } = useQuery({
@@ -49,20 +98,15 @@ const Deliveries = () => {
 
     // Fetch Deliveries
     const { data: deliveryData, isLoading: loading, isFetching: deliveriesFetching, refetch: refetchDeliveries } = useQuery({
-        queryKey: ['deliveries', page, statusFilter, urlBrand],
+        queryKey: ['deliveries', page, statusFilter, startDate, endDate, urlBrand],
         queryFn: async () => {
             const params = new URLSearchParams({ page, limit: 10, sortBy: 'createdAt', order: 'desc' });
             if (statusFilter !== 'all') params.append('status', statusFilter);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
             const response = await api.get(`/admin/deliveries?${params.toString()}`);
             const data = response.data;
-            const cacheKey = `deliveries-cache-${page}-${statusFilter}`;
-            localStorage.setItem(cacheKey, JSON.stringify(data));
             return data;
-        },
-        initialData: () => {
-            const cacheKey = `deliveries-cache-${page}-${statusFilter}`;
-            const cached = localStorage.getItem(cacheKey);
-            return cached ? JSON.parse(cached) : undefined;
         },
         placeholderData: (previousData) => previousData,
         refetchOnWindowFocus: false,
@@ -133,14 +177,25 @@ const Deliveries = () => {
                     <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">Delivery Tracking</h1>
                     <p className="text-gray-400 mt-0.5 font-bold text-xs">Track deliveries and riders in real-time</p>
                 </div>
-                <button
-                    onClick={handleSync}
-                    disabled={isSyncing}
-                    className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20 disabled:opacity-50 h-[48px]"
-                >
-                    <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                    {isSyncing ? 'Refreshing...' : 'Refresh List'}
-                </button>
+                <div className="flex items-center gap-3">
+                    <ExportButton
+                        resource="deliveries"
+                        filters={{
+                            status: statusFilter === 'all' ? '' : statusFilter,
+                            startDate,
+                            endDate,
+                            search: searchTerm
+                        }}
+                    />
+                    <button
+                        onClick={handleSync}
+                        disabled={isSyncing}
+                        className="flex items-center gap-2 px-6 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-[#56763D]/20 disabled:opacity-50 h-[48px]"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                        {isSyncing ? 'Refreshing...' : 'Refresh List'}
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -151,28 +206,112 @@ const Deliveries = () => {
             </div>
 
             <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden flex flex-col min-h-[600px]">
-                <div className="p-8 border-b border-gray-100 flex flex-col md:flex-row gap-6">
-                    <div className="flex-1 relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search by Order ID, Rider, or Customer..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="input pl-12 text-sm font-bold uppercase"
-                        />
+                <div className="p-6 sm:p-8 border-b border-gray-100 space-y-4">
+                    <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                        {/* Search Input */}
+                        <div className="relative flex-1">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search by Order ID, Rider, or Customer..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full pl-11 pr-10 py-3.5 bg-gray-50 border border-transparent focus:border-black rounded-2xl text-xs font-bold focus:outline-hidden transition-all"
+                            />
+                            {searchTerm && (
+                                <button
+                                    onClick={() => setSearchTerm('')}
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#56763D] p-1"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Dropdown Filters */}
+                        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                            {/* Status Dropdown */}
+                            <div className="relative min-w-[210px] w-full sm:w-auto">
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => {
+                                        setStatusFilter(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    className="w-full bg-gray-50 border border-transparent focus:border-black rounded-2xl py-3.5 px-4 text-xs font-black uppercase text-gray-800 tracking-wider appearance-none focus:outline-hidden cursor-pointer pr-10 shadow-xs"
+                                >
+                                    <option value="all">STATUS: ALL</option>
+                                    <option value="pending_acceptance">PENDING ACCEPTANCE</option>
+                                    <option value="picked_up">PICKED UP</option>
+                                    <option value="in_transit">IN TRANSIT</option>
+                                    <option value="delivered">DELIVERED</option>
+                                    <option value="failed">FAILED</option>
+                                </select>
+                                <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            </div>
+
+                            {/* Date Range Preset Dropdown */}
+                            <div className="relative min-w-[200px] w-full sm:w-auto">
+                                <select
+                                    value={datePreset}
+                                    onChange={(e) => handleDatePresetChange(e.target.value)}
+                                    className="w-full bg-gray-50 border border-transparent focus:border-black rounded-2xl py-3.5 px-4 text-xs font-black uppercase text-gray-800 tracking-wider appearance-none focus:outline-hidden cursor-pointer pr-10 shadow-xs"
+                                >
+                                    <option value="all">DATE: ALL TIME</option>
+                                    <option value="today">TODAY</option>
+                                    <option value="yesterday">YESTERDAY</option>
+                                    <option value="this_week">THIS WEEK</option>
+                                    <option value="this_month">THIS MONTH</option>
+                                    <option value="last_month">LAST MONTH</option>
+                                    <option value="custom">CUSTOM RANGE...</option>
+                                </select>
+                                <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-                        {['all', 'pending_acceptance', 'picked_up', 'in_transit', 'delivered', 'failed'].map((status) => (
-                            <button
-                                key={status}
-                                onClick={() => { setStatusFilter(status); setPage(1); }}
-                                className={`px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all shrink-0 ${statusFilter === status ? 'bg-black text-white border-transparent shadow-lg shadow-black/20' : 'bg-gray-50 text-gray-400 border-transparent hover:bg-gray-100'}`}
-                            >
-                                {status}
-                            </button>
-                        ))}
-                    </div>
+
+                    {/* Custom Date Range Row */}
+                    {(datePreset === 'custom' || startDate || endDate) && (
+                        <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100 bg-gray-50/50 p-4 rounded-2xl">
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                                <Calendar className="w-3.5 h-3.5 text-gray-500" /> Date Filter:
+                            </span>
+                            <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">From</span>
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => {
+                                        setStartDate(e.target.value);
+                                        setDatePreset('custom');
+                                        setPage(1);
+                                    }}
+                                    className="bg-white border border-gray-200 focus:border-black rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-hidden"
+                                />
+                            </div>
+                            <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">To</span>
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => {
+                                        setEndDate(e.target.value);
+                                        setDatePreset('custom');
+                                        setPage(1);
+                                    }}
+                                    className="bg-white border border-gray-200 focus:border-black rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 focus:outline-hidden"
+                                />
+                            </div>
+                            {(startDate || endDate) && (
+                                <button
+                                    onClick={() => handleDatePresetChange('all')}
+                                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 text-[10px] font-black uppercase transition-all shadow-xs ml-auto"
+                                >
+                                    <X className="w-3 h-3" /> Clear Dates
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex-1">
@@ -220,7 +359,7 @@ const Deliveries = () => {
                                                 <div className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> ON THE WAY</div>
                                             </td>
                                             <td className="px-8 py-6 text-right">
-                                                <button onClick={() => handleViewDetails(delivery)} className="p-3 bg-gray-50 text-gray-400 hover:bg-black hover:text-white rounded-2xl transition-all shadow-sm">
+                                                <button onClick={() => handleViewDetails(delivery)} className="p-3 bg-gray-50 text-gray-400 hover:bg-[#56763D] hover:text-white rounded-2xl transition-all shadow-sm">
                                                     <Eye className="w-5 h-5" />
                                                 </button>
                                             </td>
@@ -237,7 +376,7 @@ const Deliveries = () => {
                     <div className="p-6 bg-gray-50/20 border-t border-gray-50 flex justify-center gap-2">
                         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white border border-gray-100 disabled:opacity-30"><ArrowRight className="w-5 h-5 rotate-180 text-gray-400" /></button>
                         <span className="bg-white px-6 py-3 rounded-2xl border border-gray-100 font-black text-[10px] text-gray-400 flex items-center tracking-widest uppercase">PAGE {page} / {totalPages}</span>
-                        <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white disabled:opacity-30"><ArrowRight className="w-5 h-5 text-white" /></button>
+                        <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#56763D] text-white disabled:opacity-30"><ArrowRight className="w-5 h-5 text-white" /></button>
                     </div>
                 )}
             </div>

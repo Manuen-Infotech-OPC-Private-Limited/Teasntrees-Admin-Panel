@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../utils/api';
 import CategoryModal from '../components/CategoryModal';
+import ExportButton from '../components/ExportButton';
 import { useSocket } from '../context/SocketContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -102,7 +103,8 @@ export default function Categories() {
                     >
                         <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
                     </button>
-                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20">
+                    <ExportButton resource="categories" filters={{ search: searchTerm }} />
+                    <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-3 bg-[#56763D] text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-[#56763D]/20">
                         <Plus className="w-5 h-5" />
                         New Group
                     </button>
@@ -140,7 +142,7 @@ export default function Categories() {
                                         </p>
                                     </div>
                                     <div className="flex gap-2 mt-6">
-                                        <button onClick={() => navigate(`/${urlBrand}/categories/${category._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">View Products</button>
+                                        <button onClick={() => navigate(`/${urlBrand}/categories/${category._id}`)} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-[#56763D] hover:text-white transition-all">View Products</button>
                                         <button onClick={() => { setEditingCategory(category); setShowModal(true); }} className="flex-1 bg-gray-50 text-gray-400 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-indigo-600 hover:text-white transition-all">Edit</button>
                                         <button onClick={() => deleteCategory(category._id)} className="px-4 py-3 bg-red-50 text-red-300 rounded-2xl hover:bg-red-600 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></button>
                                     </div>
@@ -173,7 +175,7 @@ export default function Categories() {
                                 key={i + 1}
                                 onClick={() => setPagination(prev => ({ ...prev, currentPage: i + 1 }))}
                                 className={`w-12 h-12 rounded-2xl text-[10px] font-black transition-all ${pagination.currentPage === i + 1
-                                    ? 'bg-black text-white shadow-xl scale-110'
+                                    ? 'bg-[#56763D] text-white shadow-xl scale-110'
                                     : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'
                                     }`}
                             >

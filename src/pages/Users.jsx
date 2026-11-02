@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Users, Search, Filter, Shield,
-    User, Bike, Briefcase, ArrowRight, RefreshCw, Plus
+    User, Bike, Briefcase, ArrowRight, RefreshCw
 } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
 import api from '../utils/api';
@@ -157,10 +157,6 @@ const UsersPage = () => {
                     >
                         <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin text-indigo-600' : 'text-gray-400'}`} />
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase transition-all shadow-lg hover:shadow-black/20 hover:-translate-y-1">
-                        <Plus className="w-5 h-5" />
-                        Create Admin
-                    </button>
                 </div>
             </div>
 
@@ -207,7 +203,7 @@ const UsersPage = () => {
                             key={role}
                             onClick={() => { setRoleFilter(role); setPage(1); }}
                             className={`px-6 py-2.5 rounded-xl text-[10px] font-black transition-all capitalize whitespace-nowrap uppercase tracking-wider ${roleFilter === role
-                                ? 'bg-black text-white shadow-lg'
+                                ? 'bg-[#56763D] text-white shadow-lg'
                                 : 'text-gray-400 hover:text-gray-600 hover:bg-white'
                                 }`}
                         >
@@ -272,7 +268,7 @@ const UsersPage = () => {
                                     key={p}
                                     onClick={() => setPage(p)}
                                     className={`w-12 h-12 rounded-2xl text-xs font-black transition-all shadow-sm ${page === p
-                                        ? 'bg-black text-white shadow-xl scale-110'
+                                        ? 'bg-[#56763D] text-white shadow-xl scale-110'
                                         : 'bg-white text-gray-400 hover:bg-gray-50 border border-gray-100'
                                         }`}
                                 >

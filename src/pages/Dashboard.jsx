@@ -111,7 +111,7 @@ export default function Dashboard() {
                             <h2 className="text-base sm:text-lg font-black uppercase text-gray-900 tracking-tight">Recent Activity</h2>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Latest incoming orders</p>
                         </div>
-                        <button onClick={() => navigate(`/${urlBrand}/orders`)} className="p-3 bg-gray-50 rounded-2xl hover:bg-black hover:text-white transition-all"><ArrowRight className="w-5 h-5" /></button>
+                        <button onClick={() => navigate(`/${urlBrand}/orders`)} className="p-3 bg-gray-50 rounded-2xl hover:bg-[#56763D] hover:text-white transition-all"><ArrowRight className="w-5 h-5" /></button>
                     </div>
                     <div className="space-y-4 flex-1">
                         {stats?.recentOrders?.length > 0 ? (
@@ -144,7 +144,7 @@ export default function Dashboard() {
                             <h2 className="text-xl font-black uppercase text-gray-900 tracking-tight">Best Sellers</h2>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Top performing products</p>
                         </div>
-                        <button onClick={() => navigate(`/${urlBrand}/products`)} className="p-3 bg-gray-50 rounded-2xl hover:bg-black hover:text-white transition-all"><TrendingUp className="w-5 h-5" /></button>
+                        <button onClick={() => navigate(`/${urlBrand}/products`)} className="p-3 bg-gray-50 rounded-2xl hover:bg-[#56763D] hover:text-white transition-all"><TrendingUp className="w-5 h-5" /></button>
                     </div>
                     <div className="space-y-4 flex-1">
                         {stats?.topProducts?.length > 0 ? (

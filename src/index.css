@@ -1,5 +1,64 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Please Dont Take My Man';
+  src: url('/fonts/PleaseDontTakeMyMan.otf') format('opentype'),
+    url('/fonts/PleaseDontTakeMyMan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-teasntrees: 'Please Dont Take My Man', cursive, sans-serif;
+  --font-brand: 'Please Dont Take My Man', cursive, sans-serif;
+  --font-please: 'Please Dont Take My Man', cursive, sans-serif;
+
+  --color-emerald-50: #F5F8EF;
+  --color-emerald-100: #E9F0DB;
+  --color-emerald-200: #D4E3BC;
+  --color-emerald-300: #BED69D;
+  --color-emerald-400: #A9C97E;
+  --color-emerald-500: #94B741;
+  --color-emerald-600: #56763D;
+  --color-emerald-700: #466031;
+  --color-emerald-800: #364A26;
+  --color-emerald-900: #26341B;
+  --color-emerald-950: #172010;
+
+  --color-green-50: #F5F8EF;
+  --color-green-100: #E9F0DB;
+  --color-green-200: #D4E3BC;
+  --color-green-300: #BED69D;
+  --color-green-400: #A9C97E;
+  --color-green-500: #94B741;
+  --color-green-600: #56763D;
+  --color-green-700: #466031;
+  --color-green-800: #364A26;
+  --color-green-900: #26341B;
+  --color-green-950: #172010;
+
+  --color-primary-50: #F5F8EF;
+  --color-primary-100: #E9F0DB;
+  --color-primary-200: #D4E3BC;
+  --color-primary-300: #BED69D;
+  --color-primary-400: #A9C97E;
+  --color-primary-500: #94B741;
+  --color-primary-600: #56763D;
+  --color-primary-700: #466031;
+  --color-primary-800: #364A26;
+  --color-primary-900: #26341B;
+
+  --color-tnt-primary: #56763D;
+  --color-tnt-secondary: #94B741;
+}
+
+.font-teasntrees,
+.font-brand,
+.font-please {
+  font-family: 'Please Dont Take My Man', cursive, sans-serif !important;
+}
+
 html {
   font-size: 14px;
 }
@@ -12,7 +71,7 @@ html {
 
 @layer components {
   .btn-primary {
-    @apply bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+    @apply bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
   }
 
   .btn-secondary {
@@ -24,7 +83,7 @@ html {
   }
 
   .input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none;
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none;
   }
 }
 
@@ -83,13 +142,73 @@ html {
   animation: shake 0.5s;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Completely hide all scrollbars globally across all browsers */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+}
+
+::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  display: none !important;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  display: none !important;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-button,
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  -webkit-appearance: none !important;
+}
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Remove black focus outlines and box lines on Recharts SVG and wrappers */
+.recharts-wrapper,
+.recharts-wrapper *,
+.recharts-surface,
+.recharts-surface:focus,
+.recharts-surface:focus-visible,
+svg.recharts-surface,
+svg.recharts-surface:focus,
+svg.recharts-surface:focus-visible,
+.recharts-responsive-container:focus,
+.recharts-responsive-container:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Remove grey/black background and stroke on Recharts bar hover */
+.recharts-tooltip-cursor,
+svg .recharts-tooltip-cursor {
+  fill: transparent !important;
+  stroke: transparent !important;
+  outline: none !important;
+}
