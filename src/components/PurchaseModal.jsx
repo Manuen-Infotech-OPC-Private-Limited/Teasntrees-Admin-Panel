@@ -190,7 +190,7 @@ export default function PurchaseModal({ isOpen, onClose, onSave, editingPurchase
     };
 
     return (
-        <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+        <div className="fixed inset-0 z-50 overflow-hidden bg-black/30 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
             <div className="bg-white rounded-[2.5rem] max-w-4xl w-full p-6 sm:p-8 shadow-none border border-gray-200 max-h-[92vh] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 <div className="flex items-center justify-between pb-6 border-b border-gray-100">
                     <div>

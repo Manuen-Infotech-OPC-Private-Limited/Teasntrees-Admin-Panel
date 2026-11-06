@@ -288,7 +288,7 @@ const ServiceAreas = () => {
 
             {/* Creation Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
                     <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-10 animate-in fade-in zoom-in duration-200 border border-gray-100">
                         <h3 className="text-2xl font-black text-gray-900 uppercase tracking-tight mb-8">Add New Zone</h3>
 

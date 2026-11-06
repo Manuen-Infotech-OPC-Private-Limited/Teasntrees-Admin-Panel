@@ -133,7 +133,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSuccess })
     };
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
             <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-gray-100 my-auto">
                 {/* Header */}
                 <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-50 p-4 sm:p-5 flex items-center justify-between z-10">
@@ -454,7 +454,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSuccess })
 
                 {/* Status Update Modal */}
                 {showStatusUpdate && (
-                    <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
                         <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl border border-gray-100">
                             <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight mb-2">Update Order Status</h3>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Change the order status</p>
@@ -493,7 +493,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSuccess })
 
                 {/* Cancel Order Modal */}
                 {showCancelModal && (
-                    <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
                         <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl border border-gray-100">
                             <h3 className="text-xl font-black text-red-600 uppercase tracking-tight mb-2">Cancel Order</h3>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Please provide a reason for cancellation</p>
@@ -524,7 +524,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSuccess })
 
                 {/* Payment Status Update Modal */}
                 {showPaymentUpdate && (
-                    <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
                         <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl border border-gray-100">
                             <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight mb-2">Update Payment Status</h3>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Change the payment status</p>
@@ -559,7 +559,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onSuccess })
 
                 {/* Rider Assignment Modal */}
                 {showRiderAssignment && (
-                    <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
                         <div className="bg-white rounded-[2.5rem] p-10 w-full max-w-lg shadow-2xl border border-gray-100">
                             <h3 className="text-2xl font-black text-gray-900 uppercase tracking-tight mb-2">Assign Rider</h3>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Assign a delivery rider to this order</p>

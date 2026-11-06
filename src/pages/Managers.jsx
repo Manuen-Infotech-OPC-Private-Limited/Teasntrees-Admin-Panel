@@ -279,7 +279,7 @@ export default function Managers() {
             </div>
 
             {showRejectModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
                     <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl">
                         <h3 className="font-black text-xl uppercase mb-2">Reject Manager</h3>
                         <p className="text-sm text-gray-500 font-bold mb-6">Reason for rejection.</p>

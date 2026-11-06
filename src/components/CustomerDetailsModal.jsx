@@ -64,7 +64,7 @@ const CustomerDetailsModal = ({ customer, onClose, onUpdate }) => {
     const stats = customerDetails.stats || {};
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
             <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-100 flex flex-col my-auto">
                 {/* Header */}
                 <div className="bg-white border-b border-gray-50 p-4 sm:p-5 flex items-center justify-between">

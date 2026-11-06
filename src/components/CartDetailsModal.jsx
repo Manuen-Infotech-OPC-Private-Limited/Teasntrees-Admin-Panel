@@ -5,7 +5,7 @@ const CartDetailsModal = ({ cart, onClose }) => {
     if (!cart) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-900/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
             <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] relative z-10">
                 {/* Header */}
                 <div className="p-5 sm:p-6 border-b border-gray-50 flex items-center justify-between bg-white z-10">

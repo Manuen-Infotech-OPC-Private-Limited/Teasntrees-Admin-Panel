@@ -251,7 +251,7 @@ export default function Riders() {
             <RiderDetailsModal isOpen={showDetailsModal} onClose={() => setShowDetailsModal(false)} rider={selectedRider} onApprove={handleApprove} onReject={handleReject} onToggleStatus={handleToggleStatus} />
 
             {showRejectModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
                     <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl">
                         <h3 className="text-xl font-black uppercase mb-2">Reject Application</h3>
                         <p className="text-sm text-gray-500 font-bold mb-6">Provide a reason for the rider force rejection.</p>

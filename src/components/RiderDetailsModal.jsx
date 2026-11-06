@@ -45,7 +45,7 @@ export default function RiderDetailsModal({ isOpen, onClose, rider, onApprove, o
 
     if (error) {
         return (
-            <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-[2.5rem] p-8 text-center max-w-sm w-full">
                     <p className="text-red-600 font-bold mb-4">System Error</p>
                     <p className="text-sm text-gray-600 mb-6">{error}</p>
@@ -63,7 +63,7 @@ export default function RiderDetailsModal({ isOpen, onClose, rider, onApprove, o
     const isLicenseExpired = rider.licenseExpiryDate && new Date(rider.licenseExpiryDate) < new Date();
 
     return (
-        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100 flex flex-col">
                 {/* Header */}
                 <div className="bg-white border-b border-gray-50 p-5 sm:p-6 flex items-center justify-between z-10">
